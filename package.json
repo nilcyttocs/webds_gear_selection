@@ -92,7 +92,13 @@
   },
   "jupyterlab": {
     "extension": true,
-    "outputDir": "webds_gear_selection/labextension"
+    "outputDir": "webds_gear_selection/labextension",
+    "sharedPackages": {
+      "@webds/service": {
+        "bundled": false,
+        "singleton": true
+      }
+    }
   },
   "jupyter-releaser": {
     "hooks": {
