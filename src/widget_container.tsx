@@ -1,0 +1,212 @@
+import React, { useEffect, useState } from "react";
+
+import { JupyterFrontEnd } from "@jupyterlab/application";
+
+import { ReactWidget } from "@jupyterlab/apputils";
+
+import Alert from "@mui/material/Alert";
+
+import CircularProgress from "@mui/material/CircularProgress";
+
+import { ThemeProvider } from "@mui/material/styles";
+
+import { WebDSService } from "@webds/service";
+
+import { Landing } from "./widget_landing";
+
+import { Sweep } from "./widget_sweep";
+
+import { Transcap } from "./widget_transcap";
+
+import { Abscap } from "./widget_abscap";
+
+import { requestAPI } from "./handler";
+
+export enum Page {
+  Landing = "LANDING",
+  Sweep = "SWEEP",
+  Transcap = "TRANSCAP",
+  Abscap = "ABSCAP"
+}
+
+export type NoiseCondition = {
+  id: string;
+  name: string;
+};
+
+export type NoiseDataEntry = {
+  condition: NoiseCondition;
+  trans: number;
+  absx: number;
+  absy: number;
+  max: number;
+};
+
+export type NoiseDataSet = {
+  intDur: number;
+  data: NoiseDataEntry[];
+  selected: boolean;
+  displayNoise: boolean;
+};
+
+export type NoiseData = NoiseDataSet[];
+
+const WIDTH = 800;
+const HEIGHT = 450;
+const TABLE_WIDTH = 1000;
+
+const DEFAULT_INT_DUR_MIN = 24;
+const DEFAULT_INT_DUR_STEPS = 75;
+
+let alertMessage = "";
+
+const alertMessagePrivateConfig =
+  "Failed to retrieve private config JSON file.";
+
+const alertMessageStaticConfig = "Failed to read static config from device.";
+
+const GearSelectionContainer = (props: any): JSX.Element => {
+  const [initialized, setInitialized] = useState<boolean>(false);
+  const [alert, setAlert] = useState<boolean>(false);
+  const [page, setPage] = useState<Page>(Page.Landing);
+  const [numGears, setNumGears] = useState<number>(0);
+  const [intDurMin, setIntDurMin] = useState<number>(DEFAULT_INT_DUR_MIN);
+  const [intDurSteps, setIntDurSteps] = useState<number>(DEFAULT_INT_DUR_STEPS);
+  const [noiseData, setNoiseData] = useState<NoiseData>([]);
+  const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
+
+  const changePage = (newPage: Page) => {
+    setPage(newPage);
+  };
+
+  const displayPage = (): JSX.Element | null => {
+    switch (page) {
+      case Page.Landing:
+        return (
+          <Landing
+            width={WIDTH}
+            height={HEIGHT}
+            changePage={changePage}
+            intDurMin={intDurMin}
+            setIntDurMin={setIntDurMin}
+            intDurSteps={intDurSteps}
+            setIntDurSteps={setIntDurSteps}
+            noiseConditions={noiseConditions}
+            setNoiseConditions={setNoiseConditions}
+          />
+        );
+      case Page.Sweep:
+        return (
+          <Sweep
+            width={WIDTH}
+            height={HEIGHT}
+            changePage={changePage}
+            numGears={numGears}
+            intDurMin={intDurMin}
+            intDurSteps={intDurSteps}
+            setNoiseData={setNoiseData}
+            noiseConditions={noiseConditions}
+          />
+        );
+      case Page.Transcap:
+        return (
+          <Transcap
+            width={TABLE_WIDTH}
+            changePage={changePage}
+            numGears={numGears}
+            noiseData={noiseData}
+          />
+        );
+      case Page.Abscap:
+        return (
+          <Abscap
+            width={TABLE_WIDTH}
+            changePage={changePage}
+            numGears={numGears}
+            noiseData={noiseData}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const initialize = async () => {
+    try {
+      await props.service.packrat.cache.addPrivateConfig();
+    } catch (error) {
+      console.error(error);
+      alertMessage = alertMessagePrivateConfig;
+      setAlert(true);
+      return;
+    }
+    try {
+      const staticConfig = await requestAPI<any>(
+        "command?query=getStaticConfig"
+      );
+      setNumGears(staticConfig["daqParams.freqTable[0].rstretchDur"].length);
+    } catch (error) {
+      console.error(error);
+      alertMessage = alertMessageStaticConfig;
+      setAlert(true);
+      return;
+    }
+    setInitialized(true);
+  };
+
+  useEffect(() => {
+    initialize();
+  }, []);
+
+  const webdsTheme = props.service.ui.getWebDSTheme();
+
+  return (
+    <div className="jp-webds-widget-body">
+      <ThemeProvider theme={webdsTheme}>
+      {initialized ? (
+        displayPage()
+      ) : (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)"
+            }}
+          >
+            <CircularProgress color="primary" />
+          </div>
+          {alert ? (
+            <Alert severity="error" onClose={() => setAlert(false)}>
+              {alertMessage}
+            </Alert>
+          ) : null}
+        </>
+      )}
+      </ThemeProvider>
+    </div>
+  );
+};
+
+export class GearSelectionWidget extends ReactWidget {
+  frontend: JupyterFrontEnd | null = null;
+  service: WebDSService | null = null;
+
+  constructor(app: JupyterFrontEnd, service: WebDSService) {
+    super();
+    this.frontend = app;
+    this.service = service;
+  }
+
+  render(): JSX.Element {
+    return (
+      <div className="jp-webds-widget">
+        <GearSelectionContainer
+          frontend={this.frontend}
+          service={this.service}
+        />
+      </div>
+    );
+  }
+}
