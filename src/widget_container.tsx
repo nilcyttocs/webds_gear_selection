@@ -14,6 +14,8 @@ import { WebDSService } from "@webds/service";
 
 import { Landing } from "./widget_landing";
 
+import { Advanced } from "./widget_advanced";
+
 import { Sweep } from "./widget_sweep";
 
 import { Transcap } from "./widget_transcap";
@@ -24,6 +26,7 @@ import { requestAPI } from "./handler";
 
 export enum Page {
   Landing = "LANDING",
+  Advanced = "ADVANCED",
   Sweep = "SWEEP",
   Transcap = "TRANSCAP",
   Abscap = "ABSCAP"
@@ -58,6 +61,9 @@ const TABLE_WIDTH = 1000;
 const DEFAULT_INT_DUR_MIN = 24;
 const DEFAULT_INT_DUR_STEPS = 75;
 
+const DEFAULT_BASELINE_FRAMES = 16;
+const DEFAULT_GRAM_DATA_FRAMES = 400;
+
 let alertMessage = "";
 
 const alertMessagePrivateConfig =
@@ -72,6 +78,12 @@ const GearSelectionContainer = (props: any): JSX.Element => {
   const [numGears, setNumGears] = useState<number>(0);
   const [intDurMin, setIntDurMin] = useState<number>(DEFAULT_INT_DUR_MIN);
   const [intDurSteps, setIntDurSteps] = useState<number>(DEFAULT_INT_DUR_STEPS);
+  const [baselineFrames, setBaselineFrames] = useState<number>(
+    DEFAULT_BASELINE_FRAMES
+  );
+  const [gramDataFrames, setGramDataFrames] = useState<number>(
+    DEFAULT_GRAM_DATA_FRAMES
+  );
   const [noiseData, setNoiseData] = useState<NoiseData>([]);
   const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
 
@@ -95,6 +107,18 @@ const GearSelectionContainer = (props: any): JSX.Element => {
             setNoiseConditions={setNoiseConditions}
           />
         );
+      case Page.Advanced:
+        return (
+          <Advanced
+            width={WIDTH}
+            height={HEIGHT}
+            changePage={changePage}
+            baselineFrames={baselineFrames}
+            setBaselineFrames={setBaselineFrames}
+            gramDataFrames={gramDataFrames}
+            setGramDataFrames={setGramDataFrames}
+          />
+        );
       case Page.Sweep:
         return (
           <Sweep
@@ -104,6 +128,8 @@ const GearSelectionContainer = (props: any): JSX.Element => {
             numGears={numGears}
             intDurMin={intDurMin}
             intDurSteps={intDurSteps}
+            baselineFrames={baselineFrames}
+            gramDataFrames={gramDataFrames}
             setNoiseData={setNoiseData}
             noiseConditions={noiseConditions}
           />
@@ -163,27 +189,27 @@ const GearSelectionContainer = (props: any): JSX.Element => {
   return (
     <div className="jp-webds-widget-body">
       <ThemeProvider theme={webdsTheme}>
-      {initialized ? (
-        displayPage()
-      ) : (
-        <>
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)"
-            }}
-          >
-            <CircularProgress color="primary" />
-          </div>
-          {alert ? (
-            <Alert severity="error" onClose={() => setAlert(false)}>
-              {alertMessage}
-            </Alert>
-          ) : null}
-        </>
-      )}
+        {initialized ? (
+          displayPage()
+        ) : (
+          <>
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)"
+              }}
+            >
+              <CircularProgress color="primary" />
+            </div>
+            {alert ? (
+              <Alert severity="error" onClose={() => setAlert(false)}>
+                {alertMessage}
+              </Alert>
+            ) : null}
+          </>
+        )}
       </ThemeProvider>
     </div>
   );

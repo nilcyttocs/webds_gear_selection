@@ -69,6 +69,12 @@ export const Landing = (props: any): JSX.Element => {
     props.changePage(Page.Sweep);
   };
 
+  const handleAdvancedButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    props.changePage(Page.Advanced);
+  };
+
   const handleListItemClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     id: string,
@@ -310,6 +316,23 @@ export const Landing = (props: any): JSX.Element => {
                   Start
                 </Button>
               )}
+              <Button
+                variant="text"
+                onClick={(event) => handleAdvancedButtonClick(event)}
+                sx={{
+                  position: "absolute",
+                  top: "5px",
+                  right: "20px",
+                  textTransform: "none"
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{ textDecoration: "underline" }}
+                >
+                  Advanced Settings
+                </Typography>
+              </Button>
             </div>
           </Box>
           <Dialog

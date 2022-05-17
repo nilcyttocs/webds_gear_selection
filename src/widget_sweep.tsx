@@ -11,6 +11,8 @@ import ListItemText from "@mui/material/ListItemText";
 
 import LinearProgress from "@mui/material/LinearProgress";
 
+import { grey } from "@mui/material/colors";
+
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 
@@ -61,11 +63,13 @@ const sendClearPDNRTuningRequest = async (): Promise<void> => {
 
 const sendSweepRequest = async (
   fnName: string,
-  numGears: number
+  numGears: number,
+  baselineFrames: number,
+  gramDataFrames: number
 ): Promise<void> => {
   const dataToSend = {
     function: fnName,
-    arguments: [intDurs, numGears]
+    arguments: [intDurs, numGears, baselineFrames, gramDataFrames]
   };
   try {
     await requestAPI<any>("gear-selection", {
@@ -111,7 +115,7 @@ export const Sweep = (props: any): JSX.Element => {
   const eventHandler = (event: any) => {
     const data = JSON.parse(event.data);
     console.log(data);
-    const progress = Math.floor((data.progress * 100) / data.total);
+    const progress = Math.floor(data.progress * 100) / data.total;
     setProg(progress);
   };
 
@@ -190,7 +194,12 @@ export const Sweep = (props: any): JSX.Element => {
       fnName = "pdnr_sweep";
     }
     try {
-      sendSweepRequest(fnName, props.numGears);
+      sendSweepRequest(
+        fnName,
+        props.numGears,
+        props.baselineFrames,
+        props.gramDataFrames
+      );
     } catch (error) {
       console.error(error);
       if (sweep === "Pre-PDNR Sweep") {
@@ -201,7 +210,7 @@ export const Sweep = (props: any): JSX.Element => {
       setAlert(true);
       return;
     }
-    setProg(1);
+    setProg(0.001);
     addEvent();
   };
 
@@ -305,7 +314,10 @@ export const Sweep = (props: any): JSX.Element => {
                 >
                   <Typography sx={{ paddingTop: "20px", textAlign: "center" }}>
                     <span
-                      style={{ fontSize: "1.1rem", backgroundColor: "yellow" }}
+                      style={{
+                        fontSize: "1.1rem",
+                        backgroundColor: "darkorange"
+                      }}
                     >
                       Please set up noise condition "
                       <span style={{ fontWeight: "bold" }}>
@@ -373,12 +385,26 @@ export const Sweep = (props: any): JSX.Element => {
                   textTransform: "none"
                 }}
               >
-                <Typography
-                  variant="body2"
-                  sx={{ textDecoration: "underline" }}
-                >
-                  Abort
-                </Typography>
+                {prog !== 0 &&
+                !(
+                  prog === 100 &&
+                  sweep === "PDNR Sweep" &&
+                  step === props.noiseConditions.length - 1
+                ) ? (
+                  <Typography
+                    variant="body2"
+                    sx={{ color: grey[500], textDecoration: "underline" }}
+                  >
+                    Abort
+                  </Typography>
+                ) : (
+                  <Typography
+                    variant="body2"
+                    sx={{ textDecoration: "underline" }}
+                  >
+                    Abort
+                  </Typography>
+                )}
               </Button>
             </div>
           </Box>

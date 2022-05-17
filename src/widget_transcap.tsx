@@ -589,18 +589,7 @@ export const Transcap = (props: any): JSX.Element => {
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                       <TableCell></TableCell>
-                      <>
-                        {sort === "freq" ? (
-                          <TableCell
-                            component="th"
-                            sx={{ backgroundColor: "grey.200" }}
-                          >
-                            Frequency (kHz)
-                          </TableCell>
-                        ) : (
-                          <TableCell component="th">Frequency (kHz)</TableCell>
-                        )}
-                      </>
+                      <TableCell component="th">Frequency (kHz)</TableCell>
                       {generateFrequencies()}
                     </TableRow>
                     <TableRow>
@@ -637,20 +626,9 @@ export const Transcap = (props: any): JSX.Element => {
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                       <TableCell></TableCell>
-                      <>
-                        {sort === "total" ? (
-                          <TableCell
-                            component="th"
-                            sx={{ backgroundColor: "grey.200" }}
-                          >
-                            Total Noise (non-excluded)
-                          </TableCell>
-                        ) : (
-                          <TableCell component="th">
-                            Total Noise (non-excluded)
-                          </TableCell>
-                        )}
-                      </>
+                      <TableCell component="th">
+                        Total Noise (non-excluded)
+                      </TableCell>
                       {generateTotalNoisesNonExcluded()}
                     </TableRow>
                   </TableBody>

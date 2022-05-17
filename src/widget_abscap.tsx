@@ -506,7 +506,7 @@ export const Abscap = (props: any): JSX.Element => {
     columns.forEach((item) => {
       let bgColor = "transparent";
       if (showT2D && item.displayNoise) {
-        bgColor = "grey.400";
+        bgColor = "gray";
       }
       if (showXY) {
         output.push(
@@ -536,7 +536,7 @@ export const Abscap = (props: any): JSX.Element => {
     columns.forEach((item) => {
       let bgColor = "transparent";
       if (showT2D && item.displayNoise) {
-        bgColor = "grey.400";
+        bgColor = "gray";
       }
       if (showXY) {
         output.push(
@@ -566,7 +566,7 @@ export const Abscap = (props: any): JSX.Element => {
     columns.forEach((item) => {
       let bgColor = "transparent";
       if (showT2D && item.displayNoise) {
-        bgColor = "grey.400";
+        bgColor = "gray";
       }
       if (showXY) {
         output.push(
@@ -596,7 +596,7 @@ export const Abscap = (props: any): JSX.Element => {
     columns.forEach((item) => {
       let bgColor = "transparent";
       if (showT2D && item.displayNoise) {
-        bgColor = "grey.400";
+        bgColor = "gray";
       }
       if (showXY) {
         output.push(
@@ -626,7 +626,7 @@ export const Abscap = (props: any): JSX.Element => {
     columns.forEach((item) => {
       let bgColor = "transparent";
       if (showT2D && item.displayNoise) {
-        bgColor = "grey.400";
+        bgColor = "gray";
       }
       if (showXY) {
         output.push(
@@ -654,7 +654,7 @@ export const Abscap = (props: any): JSX.Element => {
     columns.forEach((item) => {
       let bgColor = "transparent";
       if (showT2D && item.displayNoise) {
-        bgColor = "grey.400";
+        bgColor = "gray";
       }
       if (showXY) {
         output.push(
@@ -746,7 +746,7 @@ export const Abscap = (props: any): JSX.Element => {
           {conditionData.data.map((item: any, index: number) => {
             let bgColor = "transparent";
             if (showT2D && item.displayNoise) {
-              bgColor = "grey.400";
+              bgColor = "gray";
             }
             return (
               <TableCell key={index} sx={{ backgroundColor: bgColor }}>
@@ -833,18 +833,7 @@ export const Abscap = (props: any): JSX.Element => {
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                       <TableCell></TableCell>
-                      <>
-                        {sort === "freq" ? (
-                          <TableCell
-                            component="th"
-                            sx={{ backgroundColor: "grey.200" }}
-                          >
-                            Frequency (kHz)
-                          </TableCell>
-                        ) : (
-                          <TableCell component="th">Frequency (kHz)</TableCell>
-                        )}
-                      </>
+                      <TableCell component="th">Frequency (kHz)</TableCell>
                       {generateFrequencies()}
                     </TableRow>
                     <TableRow>
@@ -881,20 +870,9 @@ export const Abscap = (props: any): JSX.Element => {
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                       <TableCell></TableCell>
-                      <>
-                        {sort === "total" ? (
-                          <TableCell
-                            component="th"
-                            sx={{ backgroundColor: "grey.200" }}
-                          >
-                            Total Noise (non-excluded)
-                          </TableCell>
-                        ) : (
-                          <TableCell component="th">
-                            Total Noise (non-excluded)
-                          </TableCell>
-                        )}
-                      </>
+                      <TableCell component="th">
+                        Total Noise (non-excluded)
+                      </TableCell>
                       {generateTotalNoisesNonExcluded()}
                     </TableRow>
                   </TableBody>
