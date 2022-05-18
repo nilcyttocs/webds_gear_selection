@@ -305,14 +305,13 @@ export const Landing = (props: any): JSX.Element => {
             >
               {noiseConditions.length ? (
                 <Button
-                  variant="contained"
                   onClick={(event) => handleStartButtonClick(event)}
                   sx={{ width: "100px" }}
                 >
                   Start
                 </Button>
               ) : (
-                <Button variant="contained" disabled sx={{ width: "100px" }}>
+                <Button disabled sx={{ width: "100px" }}>
                   Start
                 </Button>
               )}
@@ -358,14 +357,12 @@ export const Landing = (props: any): JSX.Element => {
             </DialogContent>
             <DialogActions>
               <Button
-                variant="contained"
                 onClick={(event) => handleDialogDoneButtonClick(event)}
                 sx={{ width: "75px" }}
               >
                 Done
               </Button>
               <Button
-                variant="contained"
                 onClick={(event) => handleDialogCancelButtonClick(event)}
                 sx={{ width: "75px" }}
               >

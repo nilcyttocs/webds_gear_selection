@@ -115,7 +115,7 @@ export const Sweep = (props: any): JSX.Element => {
   const eventHandler = (event: any) => {
     const data = JSON.parse(event.data);
     console.log(data);
-    const progress = Math.floor(data.progress * 100) / data.total;
+    const progress = Math.floor((data.progress * 100) / data.total);
     setProg(progress);
   };
 
@@ -160,7 +160,7 @@ export const Sweep = (props: any): JSX.Element => {
             setGoLabel("Next");
             setProg(100);
           }
-        }, 500);
+        }, 1500);
       }
     };
   };
@@ -353,15 +353,7 @@ export const Sweep = (props: any): JSX.Element => {
               }}
             >
               <Button
-                variant="contained"
-                disabled={
-                  prog !== 0 &&
-                  !(
-                    prog === 100 &&
-                    sweep === "PDNR Sweep" &&
-                    step === props.noiseConditions.length - 1
-                  )
-                }
+                disabled={prog !== 0 && goLabel !== "Next"}
                 onClick={(event) => handleGoButtonClick(event)}
                 sx={{ width: "100px" }}
               >
@@ -369,14 +361,7 @@ export const Sweep = (props: any): JSX.Element => {
               </Button>
               <Button
                 variant="text"
-                disabled={
-                  prog !== 0 &&
-                  !(
-                    prog === 100 &&
-                    sweep === "PDNR Sweep" &&
-                    step === props.noiseConditions.length - 1
-                  )
-                }
+                disabled={prog !== 0 && goLabel !== "Next"}
                 onClick={(event) => handleAbortButtonClick(event)}
                 sx={{
                   position: "absolute",
@@ -385,12 +370,7 @@ export const Sweep = (props: any): JSX.Element => {
                   textTransform: "none"
                 }}
               >
-                {prog !== 0 &&
-                !(
-                  prog === 100 &&
-                  sweep === "PDNR Sweep" &&
-                  step === props.noiseConditions.length - 1
-                ) ? (
+                {prog !== 0 && goLabel !== "Next" ? (
                   <Typography
                     variant="body2"
                     sx={{ color: grey[500], textDecoration: "underline" }}

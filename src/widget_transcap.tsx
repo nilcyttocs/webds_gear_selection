@@ -645,7 +645,6 @@ export const Transcap = (props: any): JSX.Element => {
             >
               <Stack spacing={1} sx={{ position: "absolute", left: "0px" }}>
                 <Button
-                  variant="contained"
                   size="small"
                   onClick={(event) => handleExcludeAllButtonClick(event)}
                   sx={{
@@ -657,7 +656,6 @@ export const Transcap = (props: any): JSX.Element => {
                   Exclude All
                 </Button>
                 <Button
-                  variant="contained"
                   size="small"
                   onClick={(event) => handleClearExclusionsButtonClick(event)}
                   sx={{
@@ -680,7 +678,6 @@ export const Transcap = (props: any): JSX.Element => {
               </Stack>
               <Stack spacing={1} sx={{ position: "absolute", right: "0px" }}>
                 <Button
-                  variant="contained"
                   size="small"
                   onClick={(event) => handleTestButtonClick(event)}
                   sx={{
@@ -692,7 +689,6 @@ export const Transcap = (props: any): JSX.Element => {
                   Test
                 </Button>
                 <Button
-                  variant="contained"
                   size="small"
                   onClick={(event) => handleCommitButtonClick(event)}
                   sx={{
@@ -706,7 +702,6 @@ export const Transcap = (props: any): JSX.Element => {
               </Stack>
               <Stack spacing={2} direction="row">
                 <Button
-                  variant="contained"
                   onClick={(event) => handleBackButtonClick(event)}
                   sx={{
                     width: "100px",
@@ -716,7 +711,6 @@ export const Transcap = (props: any): JSX.Element => {
                   Back
                 </Button>
                 <Button
-                  variant="contained"
                   onClick={(event) => handleNextButtonClick(event)}
                   sx={{
                     width: "100px",
@@ -756,7 +750,6 @@ export const Transcap = (props: any): JSX.Element => {
             </DialogContent>
             <DialogActions>
               <Button
-                variant="contained"
                 disabled={!selectedGears[0] || !selectedGears[0].frequency}
                 onClick={(event) => handleDialogWriteButtonClick(event)}
                 sx={{ width: "100px" }}
@@ -764,7 +757,6 @@ export const Transcap = (props: any): JSX.Element => {
                 Write
               </Button>
               <Button
-                variant="contained"
                 onClick={(event) => handleDialogCancelButtonClick(event)}
                 sx={{ width: "100px" }}
               >

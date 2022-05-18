@@ -155,7 +155,6 @@ export const Advanced = (props: any): JSX.Element => {
               }}
             >
               <Button
-                variant="contained"
                 onClick={(event) => handleDoneButtonClick(event)}
                 sx={{ width: "100px" }}
               >
