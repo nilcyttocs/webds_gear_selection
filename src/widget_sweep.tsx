@@ -39,9 +39,11 @@ let eventSource: EventSource | undefined = undefined;
 
 let alertMessage = "";
 
-const alertMessagePrePDNRSweep = "Failed to do Pre-PDNR sweep.";
+const alertMessagePrePDNRSweep =
+  "Failed to do Pre-PDNR sweep. Please ensure device and running firmware support Carme gear selection.";
 
-const alertMessagePDNRSweep = "Failed to do PDNR sweep.";
+const alertMessagePDNRSweep =
+  "Failed to do PDNR sweep. Please ensure device and running firmware support Carme gear selection.";
 
 const alertMessageClearPDNRTuning = "Failed to clear PDNR tuning.";
 

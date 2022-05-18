@@ -69,7 +69,8 @@ let alertMessage = "";
 const alertMessagePrivateConfig =
   "Failed to retrieve private config JSON file. Please check in file browser in left sidebar and ensure availability of private config JSON file in /Packrat/ directory (e.g. /Packrat/1234567/config_private.json for PR1234567).";
 
-const alertMessageStaticConfig = "Failed to read static config from device.";
+const alertMessageStaticConfig =
+  "Failed to read static config and obtain gear information from device. Please ensure device and running firmware support Carme gear selection.";
 
 const GearSelectionContainer = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
