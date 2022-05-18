@@ -136,9 +136,7 @@ export const Sweep = (props: any): JSX.Element => {
     if (eventSource) {
       return;
     }
-    eventSource = new window.EventSource(
-      "http://localhost:8888/webds/gear-selection"
-    );
+    eventSource = new window.EventSource("/webds/gear-selection");
     eventSource.addEventListener("gear-selection", eventHandler, false);
     eventSource.addEventListener("error", errorHandler, false);
     eventSource.onmessage = function (event) {
