@@ -67,7 +67,7 @@ const DEFAULT_GRAM_DATA_FRAMES = 400;
 let alertMessage = "";
 
 const alertMessagePrivateConfig =
-  "Failed to retrieve private config JSON file.";
+  "Failed to retrieve private config JSON file. Please check in file browser in left sidebar and ensure availability of private config JSON file in /Packrat/ directory (e.g. /Packrat/1234567/config_private.json for PR1234567).";
 
 const alertMessageStaticConfig = "Failed to read static config from device.";
 
@@ -204,7 +204,11 @@ const GearSelectionContainer = (props: any): JSX.Element => {
               <CircularProgress color="primary" />
             </div>
             {alert ? (
-              <Alert severity="error" onClose={() => setAlert(false)}>
+              <Alert
+                severity="error"
+                onClose={() => setAlert(false)}
+                sx={{ whiteSpace: "pre-wrap" }}
+              >
                 {alertMessage}
               </Alert>
             ) : null}

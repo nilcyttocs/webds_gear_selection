@@ -289,9 +289,7 @@ export const Sweep = (props: any): JSX.Element => {
             >
               Carme Gear Selection
             </Typography>
-            <Typography
-              sx={{ height: "25px", textAlign: "center", fontWeight: "bold" }}
-            >
+            <Typography sx={{ height: "25px", textAlign: "center" }}>
               {sweep}
             </Typography>
             <Box
