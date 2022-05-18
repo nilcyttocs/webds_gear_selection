@@ -88,7 +88,9 @@ export const Advanced = (props: any): JSX.Element => {
                     Covariance Params
                   </Typography>
                   {accordionExpanded ? null : (
-                    <Typography sx={{ paddingLeft: "4px" }}>
+                    <Typography
+                      sx={{ paddingLeft: "4px", color: "text.secondary" }}
+                    >
                       Baseline Frames: {baselineFrames}, Gram Data Frames:{" "}
                       {gramDataFrames}
                     </Typography>
