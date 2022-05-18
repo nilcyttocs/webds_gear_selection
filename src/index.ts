@@ -59,7 +59,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     launcher.add({
       command,
       args: { isLauncher: true },
-      category: "WebDS - Exploration"
+      category: "WebDS - Tutors"
     });
 
     let tracker = new WidgetTracker<MainAreaWidget>({
