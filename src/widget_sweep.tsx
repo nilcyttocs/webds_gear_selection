@@ -312,11 +312,16 @@ export const Sweep = (props: any): JSX.Element => {
                     height: "64px"
                   }}
                 >
-                  <Typography sx={{ paddingTop: "20px", textAlign: "center" }}>
+                  <Typography
+                    sx={{
+                      paddingTop: "20px",
+                      textAlign: "center",
+                      textDecoration: "underline"
+                    }}
+                  >
                     <span
                       style={{
-                        fontSize: "1.1rem",
-                        backgroundColor: "darkorange"
+                        fontSize: "1.1rem"
                       }}
                     >
                       Please set up noise condition "
