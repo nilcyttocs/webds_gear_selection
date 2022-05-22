@@ -45,7 +45,27 @@ const alertMessagePrePDNRSweep =
 const alertMessagePDNRSweep =
   "Failed to do PDNR sweep. Please ensure device and running firmware support Carme gear selection.";
 
+const alertMessageAbortPrePDNRSweep = "Failed to abort Pre-PDNR sweep.";
+
+const alertMessageAbortPDNRSweep = "Failed to abort PDNR sweep.";
+
 const alertMessageClearPDNRTuning = "Failed to clear PDNR tuning.";
+
+const sendAbortRequest = async (): Promise<void> => {
+  const dataToSend = {
+    function: "stop"
+  };
+  try {
+    await requestAPI<any>("gear-selection", {
+      body: JSON.stringify(dataToSend),
+      method: "POST"
+    });
+    return Promise.resolve();
+  } catch (error) {
+    console.error(`Error - POST /webds/gear-selectio\n${dataToSend}\n${error}`);
+    return Promise.reject("Failed to abort sweep");
+  }
+};
 
 const sendClearPDNRTuningRequest = async (): Promise<void> => {
   const dataToSend = {
@@ -117,7 +137,7 @@ export const Sweep = (props: any): JSX.Element => {
   const eventHandler = (event: any) => {
     const data = JSON.parse(event.data);
     console.log(data);
-    const progress = Math.floor((data.progress * 100) / data.total);
+    const progress = (data.progress * 100) / data.total;
     setProg(progress);
   };
 
@@ -142,7 +162,11 @@ export const Sweep = (props: any): JSX.Element => {
     eventSource.addEventListener("gear-selection", eventHandler, false);
     eventSource.addEventListener("error", errorHandler, false);
     eventSource.onmessage = function (event) {
-      if (event.lastEventId === "completed") {
+      if (event.lastEventId === "stopped") {
+        removeEvent();
+        props.changePage(Page.Landing);
+        return;
+      } else if (event.lastEventId === "completed") {
         if (sweep === "PDNR Sweep") {
           const data = JSON.parse(event.data);
           collectNoiseData(data);
@@ -223,8 +247,20 @@ export const Sweep = (props: any): JSX.Element => {
   const handleAbortButtonClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    removeEvent();
-    props.changePage(Page.Landing);
+    if (prog === 0 || goLabel === "Next") {
+      removeEvent();
+      props.changePage(Page.Landing);
+    }
+    try {
+      sendAbortRequest();
+    } catch (error) {
+      console.error(error);
+      if (sweep === "Pre-PDNR Sweep") {
+        alertMessage = alertMessageAbortPrePDNRSweep;
+      } else {
+        alertMessage = alertMessageAbortPDNRSweep;
+      }
+    }
   };
 
   const generateListItems = (): JSX.Element[] => {
@@ -364,7 +400,6 @@ export const Sweep = (props: any): JSX.Element => {
               </Button>
               <Button
                 variant="text"
-                disabled={prog !== 0 && goLabel !== "Next"}
                 onClick={(event) => handleAbortButtonClick(event)}
                 sx={{
                   position: "absolute",
@@ -373,21 +408,12 @@ export const Sweep = (props: any): JSX.Element => {
                   textTransform: "none"
                 }}
               >
-                {prog !== 0 && goLabel !== "Next" ? (
-                  <Typography
-                    variant="body2"
-                    sx={{ color: grey[500], textDecoration: "underline" }}
-                  >
-                    Abort
-                  </Typography>
-                ) : (
-                  <Typography
-                    variant="body2"
-                    sx={{ textDecoration: "underline" }}
-                  >
-                    Abort
-                  </Typography>
-                )}
+                <Typography
+                  variant="body2"
+                  sx={{ textDecoration: "underline" }}
+                >
+                  Abort
+                </Typography>
               </Button>
             </div>
           </Box>
