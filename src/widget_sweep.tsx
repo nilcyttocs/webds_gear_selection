@@ -295,6 +295,12 @@ export const Sweep = (props: any): JSX.Element => {
   };
 
   useEffect(() => {
+    return () => {
+      removeEvent();
+    };
+  }, []);
+
+  useEffect(() => {
     intDurs = [];
     noiseData = [];
     for (
