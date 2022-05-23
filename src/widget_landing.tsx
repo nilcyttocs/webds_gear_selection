@@ -144,7 +144,7 @@ export const Landing = (props: any): JSX.Element => {
     }
   };
 
-  const handleMinIntDurInputChange = (value: string) => {
+  const handleIntDurInputChange = (id: string, value: string) => {
     if (value !== "" && isNaN(Number(value))) {
       return;
     }
@@ -153,20 +153,9 @@ export const Landing = (props: any): JSX.Element => {
     }
     const num = parseInt(value, 10);
     if (num < 4096) {
-      setIntDurMin(num);
-    }
-  };
-
-  const handleIntDurStepsInputChange = (value: string) => {
-    if (value !== "" && isNaN(Number(value))) {
-      return;
-    }
-    if (value === "") {
-      value = "0";
-    }
-    const num = parseInt(value, 10);
-    if (num <= 4096) {
-      setIntDurSteps(num);
+      if (id === "minIntDur") {
+        setIntDurMin(num);
+      } else if (id === "intDurSteps") setIntDurSteps(num);
     }
   };
 
@@ -246,7 +235,10 @@ export const Landing = (props: any): JSX.Element => {
                         id="minIntDur"
                         value={intDurMin}
                         onChange={(event) =>
-                          handleMinIntDurInputChange(event.target.value)
+                          handleIntDurInputChange(
+                            event.target.id,
+                            event.target.value
+                          )
                         }
                       />
                     </FormControl>
@@ -262,7 +254,10 @@ export const Landing = (props: any): JSX.Element => {
                         id="intDurSteps"
                         value={intDurSteps}
                         onChange={(event) =>
-                          handleIntDurStepsInputChange(event.target.value)
+                          handleIntDurInputChange(
+                            event.target.id,
+                            event.target.value
+                          )
                         }
                       />
                     </FormControl>
