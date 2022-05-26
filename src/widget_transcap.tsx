@@ -548,6 +548,15 @@ export const Transcap = (props: any): JSX.Element => {
 
   return (
     <>
+      {alert ? (
+        <Alert
+          severity="error"
+          onClose={() => setAlert(false)}
+          sx={{ marginBottom: "16px" }}
+        >
+          {alertMessage}
+        </Alert>
+      ) : null}
       {initialized ? (
         <>
           <Box sx={{ width: props.width + "px" }}>
@@ -764,11 +773,6 @@ export const Transcap = (props: any): JSX.Element => {
               </Button>
             </DialogActions>
           </Dialog>
-          {alert ? (
-            <Alert severity="error" onClose={() => setAlert(false)}>
-              {alertMessage}
-            </Alert>
-          ) : null}
         </>
       ) : null}
     </>
