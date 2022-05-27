@@ -112,7 +112,9 @@ const sendSetAbsGearsRequest = async (
     });
     return Promise.resolve();
   } catch (error) {
-    console.error(`Error - POST /webds/gear-selectio\n${dataToSend}\n${error}`);
+    console.error(
+      `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
+    );
     return Promise.reject("Failed to set abscap gears");
   }
 };
