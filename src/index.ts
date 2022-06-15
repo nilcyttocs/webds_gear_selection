@@ -4,11 +4,11 @@ import {
   JupyterFrontEndPlugin
 } from "@jupyterlab/application";
 
-import { MainAreaWidget, WidgetTracker } from "@jupyterlab/apputils";
+import { WidgetTracker } from "@jupyterlab/apputils";
 
 import { ILauncher } from "@jupyterlab/launcher";
 
-import { WebDSService } from "@webds/service";
+import { WebDSService, WebDSWidget } from "@webds/service";
 
 import { gearSelectionIcon } from "./icons";
 
@@ -29,7 +29,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
   ) => {
     console.log("JupyterLab extension @webds/gear_selection is activated!");
 
-    let widget: MainAreaWidget;
+    let widget: WebDSWidget;
     const { commands, shell } = app;
     const command: string = "webds_gear_selection:open";
     commands.addCommand(command, {
@@ -41,7 +41,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       execute: () => {
         if (!widget || widget.isDisposed) {
           const content = new GearSelectionWidget(app, service);
-          widget = new MainAreaWidget<GearSelectionWidget>({ content });
+          widget = new WebDSWidget<GearSelectionWidget>({ content });
           widget.id = "webds_gear_selection_widget";
           widget.title.label = "Gear Selection";
           widget.title.icon = gearSelectionIcon;
@@ -62,7 +62,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       category: "WebDS - Tuning"
     });
 
-    let tracker = new WidgetTracker<MainAreaWidget>({
+    let tracker = new WidgetTracker<WebDSWidget>({
       namespace: "webds_gear_selection"
     });
     restorer.restore(tracker, {
