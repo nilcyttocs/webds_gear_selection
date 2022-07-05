@@ -167,13 +167,17 @@ const GearSelectionContainer = (props: any): JSX.Element => {
       setAlert(true);
       return;
     }
+    const dataToSend: any = {
+      command: "getStaticConfig"
+    };
     try {
-      const staticConfig = await requestAPI<any>(
-        "command?query=getStaticConfig"
-      );
+      const staticConfig = await requestAPI<any>("command", {
+        body: JSON.stringify(dataToSend),
+        method: "POST"
+      });
       setNumGears(staticConfig["daqParams.freqTable[0].rstretchDur"].length);
     } catch (error) {
-      console.error(error);
+      console.error(`Error - POST /webds/command\n${dataToSend}\n${error}`);
       alertMessage = alertMessageStaticConfig;
       setAlert(true);
       return;
