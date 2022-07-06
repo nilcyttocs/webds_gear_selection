@@ -60,19 +60,11 @@ export const Landing = (props: any): JSX.Element => {
     setNoiseConditions(items);
   };
 
-  const handleStartButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleChangePageButtonClick = (page: Page) => {
     props.setIntDurMin(intDurMin);
     props.setIntDurSteps(intDurSteps);
     props.setNoiseConditions(noiseConditions);
-    props.changePage(Page.Sweep);
-  };
-
-  const handleAdvancedButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    props.changePage(Page.Advanced);
+    props.changePage(page);
   };
 
   const handleListItemClick = (
@@ -300,7 +292,7 @@ export const Landing = (props: any): JSX.Element => {
             >
               {noiseConditions.length ? (
                 <Button
-                  onClick={(event) => handleStartButtonClick(event)}
+                  onClick={() => handleChangePageButtonClick(Page.Sweep)}
                   sx={{ width: "100px" }}
                 >
                   Start
@@ -312,7 +304,7 @@ export const Landing = (props: any): JSX.Element => {
               )}
               <Button
                 variant="text"
-                onClick={(event) => handleAdvancedButtonClick(event)}
+                onClick={() => handleChangePageButtonClick(Page.Advanced)}
                 sx={{
                   position: "absolute",
                   top: "5px",
