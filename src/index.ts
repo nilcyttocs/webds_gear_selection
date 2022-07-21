@@ -14,6 +14,15 @@ import { gearSelectionIcon } from "./icons";
 
 import { GearSelectionWidget } from "./widget_container";
 
+namespace Attributes {
+  export const command = "webds_gear_selection:open";
+  export const id = "webds_gear_selection_widget";
+  export const label = "Gear Selection";
+  export const caption = "Gear Selection";
+  export const category = "Touch - Manual Config";
+  export const rank = 20;
+}
+
 /**
  * Initialization data for the @webds/gear_selection extension.
  */
@@ -31,19 +40,19 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     let widget: WebDSWidget;
     const { commands, shell } = app;
-    const command: string = "webds_gear_selection:open";
+    const command = Attributes.command;
     commands.addCommand(command, {
-      label: "Gear Selection",
-      caption: "Gear Selection",
+      label: Attributes.label,
+      caption: Attributes.caption,
       icon: (args: { [x: string]: any }) => {
         return args["isLauncher"] ? gearSelectionIcon : undefined;
       },
       execute: () => {
         if (!widget || widget.isDisposed) {
-          const content = new GearSelectionWidget(app, service);
+          const content = new GearSelectionWidget(service);
           widget = new WebDSWidget<GearSelectionWidget>({ content });
-          widget.id = "webds_gear_selection_widget";
-          widget.title.label = "Gear Selection";
+          widget.id = Attributes.id;
+          widget.title.label = Attributes.label;
           widget.title.icon = gearSelectionIcon;
           widget.title.closable = true;
         }
@@ -59,15 +68,16 @@ const plugin: JupyterFrontEndPlugin<void> = {
     launcher.add({
       command,
       args: { isLauncher: true },
-      category: "WebDS - Tuning"
+      category: Attributes.category,
+      rank: Attributes.rank
     });
 
     let tracker = new WidgetTracker<WebDSWidget>({
-      namespace: "webds_gear_selection"
+      namespace: Attributes.id
     });
     restorer.restore(tracker, {
       command,
-      name: () => "webds_gear_selection"
+      name: () => Attributes.id
     });
   }
 };

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { JupyterFrontEnd } from "@jupyterlab/application";
-
 import { ReactWidget } from "@jupyterlab/apputils";
 
 import Alert from "@mui/material/Alert";
@@ -225,22 +223,17 @@ const GearSelectionContainer = (props: any): JSX.Element => {
 };
 
 export class GearSelectionWidget extends ReactWidget {
-  frontend: JupyterFrontEnd | null = null;
   service: WebDSService | null = null;
 
-  constructor(app: JupyterFrontEnd, service: WebDSService) {
+  constructor(service: WebDSService) {
     super();
-    this.frontend = app;
     this.service = service;
   }
 
   render(): JSX.Element {
     return (
       <div className="jp-webds-widget">
-        <GearSelectionContainer
-          frontend={this.frontend}
-          service={this.service}
-        />
+        <GearSelectionContainer service={this.service} />
       </div>
     );
   }
