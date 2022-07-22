@@ -49,7 +49,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       },
       execute: () => {
         if (!widget || widget.isDisposed) {
-          const content = new GearSelectionWidget(service);
+          const content = new GearSelectionWidget(Attributes.id, service);
           widget = new WebDSWidget<GearSelectionWidget>({ content });
           widget.id = Attributes.id;
           widget.title.label = Attributes.label;
@@ -62,6 +62,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
         if (!widget.isAttached) shell.add(widget, "main");
 
         shell.activateById(widget.id);
+
+        widget.setShadows();
       }
     });
 
