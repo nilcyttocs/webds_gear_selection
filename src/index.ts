@@ -19,7 +19,7 @@ namespace Attributes {
   export const id = "webds_gear_selection_widget";
   export const label = "Gear Selection";
   export const caption = "Gear Selection";
-  export const category = "Touch - Manual Config";
+  export const category = "Touch - Config Library";
   export const rank = 20;
 }
 
