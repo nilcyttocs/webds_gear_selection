@@ -25,9 +25,7 @@ import {
 
 const SSE_CLOSED = 2;
 
-const LIST_HEIGHT_OFFSET = -2 - 16 * 2 - 64 - 24 - 1 - 24 - 24;
-
-let conditionsListHeight = 0;
+const showHelp = false;
 
 let intDurs: number[] = [];
 
@@ -116,6 +114,8 @@ export const Sweep = (props: any): JSX.Element => {
   const [prog, setProg] = useState(0);
   const [sweep, setSweep] = useState<string>("Pre-PDNR Sweep");
   const [goLabel, setGoLabel] = useState<string>("Go");
+  const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
+  const [listRightPdding, setListRightPadding] = useState(0);
 
   const collectNoiseData = (data: number[][]) => {
     noiseData.forEach((item, index: number) => {
@@ -242,15 +242,11 @@ export const Sweep = (props: any): JSX.Element => {
     addEvent();
   };
 
-  const handleGoButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleGoButtonClick = () => {
     doSweep();
   };
 
-  const handleAbortButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleAbortButtonClick = () => {
     if (prog === 0 || goLabel === "Next") {
       removeEvent();
       props.changePage(Page.Landing);
@@ -307,6 +303,22 @@ export const Sweep = (props: any): JSX.Element => {
   }, []);
 
   useEffect(() => {
+    const element = document.getElementById(
+      "webds_gear_selection_sweep_noise_conditions_list"
+    );
+    if (element && element.scrollHeight > element.clientHeight) {
+      setListRightPadding(8);
+    } else {
+      setListRightPadding(0);
+    }
+  }, [noiseConditions]);
+
+  useEffect(() => {
+    setNoiseConditions(props.noiseConditions);
+    setInitialized(true);
+  }, [props.noiseConditions]);
+
+  useEffect(() => {
     intDurs = [];
     noiseData = [];
     for (
@@ -322,9 +334,9 @@ export const Sweep = (props: any): JSX.Element => {
         displayNoise: true
       } as NoiseDataSet);
     }
-    conditionsListHeight = props.height + LIST_HEIGHT_OFFSET;
+    setNoiseConditions(props.noiseConditions);
     setInitialized(true);
-  }, [props.intDurMin, props.intDurSteps, props.height]);
+  }, [props.intDurMin, props.intDurSteps, props.noiseConditions]);
 
   return (
     <>
@@ -339,92 +351,120 @@ export const Sweep = (props: any): JSX.Element => {
       ) : null}
       {initialized ? (
         <>
-          <Box sx={{ width: props.width + "px" }}>
-            <Typography
-              variant="h5"
-              sx={{ height: "50px", textAlign: "center" }}
-            >
-              Carme Gear Selection
-            </Typography>
-            <Typography sx={{ height: "25px", textAlign: "center" }}>
-              {sweep}
-            </Typography>
+          <Stack spacing={2}>
             <Box
               sx={{
-                height: props.height + "px",
-                boxSizing: "border-box",
-                border: 1,
-                borderRadius: 1,
-                borderColor: "grey.500",
-                padding: "16px"
+                width: props.dimensions.width + "px",
+                height: props.dimensions.heightTitle + "px",
+                position: "relative",
+                bgcolor: "section.main"
               }}
             >
-              <Stack spacing={3} divider={<Divider orientation="horizontal" />}>
-                <Box
+              <Typography
+                variant="h5"
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)"
+                }}
+              >
+                Carme Gear Selection
+              </Typography>
+              {showHelp && (
+                <Button
+                  variant="text"
                   sx={{
-                    height: "64px"
+                    position: "absolute",
+                    top: "50%",
+                    left: "16px",
+                    transform: "translate(0%, -50%)"
                   }}
                 >
                   <Typography
-                    sx={{
-                      paddingTop: "20px",
-                      textAlign: "center",
-                      textDecoration: "underline"
-                    }}
+                    variant="body2"
+                    sx={{ textDecoration: "underline" }}
                   >
-                    <span
-                      style={{
-                        fontSize: "1.1rem"
-                      }}
-                    >
-                      Please set up noise condition "
-                      <span style={{ fontWeight: "bold" }}>
-                        {props.noiseConditions[step].name}
-                      </span>
-                      ". Click Go when done.
-                    </span>
+                    Help
                   </Typography>
-                </Box>
-                <div>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Noise Conditions
-                  </Typography>
-                  <Box
-                    sx={{
-                      height: conditionsListHeight + "px",
-                      overflow: "auto"
-                    }}
-                  >
-                    <Stack justifyContent="center" direction="row">
-                      <List sx={{ width: "85%" }}>{generateListItems()}</List>
-                    </Stack>
-                  </Box>
-                </div>
-              </Stack>
+                </Button>
+              )}
             </Box>
-            <div
-              style={{
-                marginTop: "20px",
+            <Box
+              sx={{
+                width: props.dimensions.width + "px",
+                height: props.dimensions.heightContent + "px",
+                boxSizing: "border-box",
+                padding: "24px",
                 position: "relative",
+                bgcolor: "section.main",
                 display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+              }}
+            >
+              <Typography sx={{ fontSize: "1.1rem" }}>{sweep}</Typography>
+              <Typography
+                sx={{
+                  marginTop: "8px",
+                  fontSize: "1.1rem",
+                  textDecoration: "underline"
+                }}
+              >
+                Please set up noise condition "
+                <span style={{ fontWeight: "bold" }}>
+                  {props.noiseConditions[step].name}
+                </span>
+                ". Click Go when done.
+              </Typography>
+              <Divider
+                orientation="horizontal"
+                sx={{ width: "100%", marginTop: "24px" }}
+              />
+              <Typography sx={{ marginTop: "24px" }}>
+                Noise Conditions
+              </Typography>
+              <div
+                id="webds_gear_selection_sweep_noise_conditions_list"
+                style={{
+                  width: "75%",
+                  marginTop: "16px",
+                  paddingRight: listRightPdding,
+                  overflow: "auto"
+                }}
+              >
+                <List>{generateListItems()}</List>
+              </div>
+            </Box>
+            <Box
+              sx={{
+                width: props.dimensions.width + "px",
+                minHeight: props.dimensions.heightControls + "px",
+                boxSizing: "border-box",
+                padding: "24px",
+                position: "relative",
+                bgcolor: "section.main",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
                 justifyContent: "center"
               }}
             >
               <Button
                 disabled={prog !== 0 && goLabel !== "Next"}
-                onClick={(event) => handleGoButtonClick(event)}
-                sx={{ width: "100px" }}
+                onClick={() => handleGoButtonClick()}
+                sx={{ width: "150px" }}
               >
                 {goLabel}
               </Button>
               <Button
                 variant="text"
-                onClick={(event) => handleAbortButtonClick(event)}
+                onClick={() => handleAbortButtonClick()}
                 sx={{
                   position: "absolute",
-                  top: "5px",
-                  right: "0px",
-                  textTransform: "none"
+                  top: "50%",
+                  right: "24px",
+                  transform: "translate(0%, -50%)"
                 }}
               >
                 <Typography
@@ -434,8 +474,8 @@ export const Sweep = (props: any): JSX.Element => {
                   Abort
                 </Typography>
               </Button>
-            </div>
-          </Box>
+            </Box>
+          </Stack>
         </>
       ) : null}
     </>

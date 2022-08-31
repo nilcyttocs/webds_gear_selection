@@ -10,7 +10,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -26,6 +25,8 @@ import DialogContent from "@mui/material/DialogContent";
 
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
+
+import { useTheme } from "@mui/material/styles";
 
 import { requestAPI } from "./handler";
 
@@ -57,6 +58,8 @@ type SelectedGear = {
 };
 
 type SelectedGears = SelectedGear[];
+
+const showHelp = false;
 
 let sort = "freq";
 
@@ -261,6 +264,9 @@ export const Transcap = (props: any): JSX.Element => {
   const [selected, setSelected] = useState<Selected>({});
   const [excluded, setExcluded] = useState<Excluded>({});
 
+  const theme = useTheme();
+  const dark = theme.palette.mode === "dark" ? "-dark" : "";
+
   const handleSortCheckboxClick = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -273,9 +279,7 @@ export const Transcap = (props: any): JSX.Element => {
     }
   };
 
-  const handleExcludeAllButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleExcludeAllButtonClick = () => {
     const exclusions = { ...excluded };
     Object.keys(exclusions).forEach((item) => {
       exclusions[item] = true;
@@ -286,9 +290,7 @@ export const Transcap = (props: any): JSX.Element => {
     }
   };
 
-  const handleClearExclusionsButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleClearExclusionsButtonClick = () => {
     const exclusions = { ...excluded };
     Object.keys(exclusions).forEach((item) => {
       exclusions[item] = false;
@@ -299,33 +301,25 @@ export const Transcap = (props: any): JSX.Element => {
     }
   };
 
-  const handleTestButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleTestButtonClick = () => {
     testCommit = "test";
     dialogTitle = testDialogTitle;
     updateSelectedGears(selected, props.numGears);
     setOpenDialog(true);
   };
 
-  const handleCommitButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleCommitButtonClick = () => {
     testCommit = "commit";
     dialogTitle = commitDialogTitle;
     updateSelectedGears(selected, props.numGears);
     setOpenDialog(true);
   };
 
-  const handleNextButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleNextButtonClick = () => {
     props.changePage(Page.Abscap);
   };
 
-  const handleBackButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleBackButtonClick = () => {
     props.changePage(Page.Sweep);
   };
 
@@ -333,9 +327,7 @@ export const Transcap = (props: any): JSX.Element => {
     setOpenDialog(false);
   };
 
-  const handleDialogWriteButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleDialogWriteButtonClick = () => {
     const selections = intDurs.filter((item) => selected[item]);
     const commit = testCommit === "commit";
     try {
@@ -352,9 +344,7 @@ export const Transcap = (props: any): JSX.Element => {
     handleDialogClose();
   };
 
-  const handleDialogCancelButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleDialogCancelButtonClick = () => {
     handleDialogClose();
   };
 
@@ -404,7 +394,12 @@ export const Transcap = (props: any): JSX.Element => {
             onChange={() => {
               updateSelection(item);
             }}
-            sx={{ width: "20px", height: "20px" }}
+            sx={{
+              width: "20px",
+              height: "20px",
+              borderColor:
+                dark === "" ? "rgba(160, 160, 160, 1)" : "rgba(96, 96, 96, 1)"
+            }}
           >
             {getSelection(item) ? (
               <CheckIcon sx={{ width: "20px", height: "20px" }} />
@@ -499,7 +494,12 @@ export const Transcap = (props: any): JSX.Element => {
               onChange={() => {
                 updateExclusion(item);
               }}
-              sx={{ width: "20px", height: "20px" }}
+              sx={{
+                width: "20px",
+                height: "20px",
+                borderColor:
+                  dark === "" ? "rgba(160, 160, 160, 1)" : "rgba(96, 96, 96, 1)"
+              }}
             >
               {getExclusion(item) ? (
                 <ClearIcon sx={{ width: "20px", height: "20px" }} />
@@ -561,103 +561,157 @@ export const Transcap = (props: any): JSX.Element => {
       ) : null}
       {initialized ? (
         <>
-          <Box sx={{ width: props.width + "px" }}>
-            <Typography
-              variant="h5"
-              sx={{ height: "50px", textAlign: "center" }}
-            >
-              Carme Gear Selection
-            </Typography>
-            <Typography sx={{ height: "25px", textAlign: "center" }}>
-              Transcap Table
-            </Typography>
-            <TableContainer
-              component={Paper}
-              elevation={7}
+          <Stack spacing={2}>
+            <Box
               sx={{
-                marginTop: "8px",
-                overflowX: "auto"
-              }}
-            >
-              <div className="jp-webds-gear-selection-table">
-                <Table padding="none" sx={{ tableLayout: "fixed" }}>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell component="th">Select</TableCell>
-                      {generateSelectButtons()}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell component="th">Integration Duration</TableCell>
-                      {generateIntegrationDurations()}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell component="th">Frequency (kHz)</TableCell>
-                      {generateFrequencies()}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell component="th">Overall Max Noise</TableCell>
-                      {generateMaxNoises()}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell component="th">
-                        Max Noise (non-excluded)
-                      </TableCell>
-                      {generateMaxNoisesNonExcluded()}
-                    </TableRow>
-                    <TableRow
-                      sx={{ borderBottom: "2px solid rgba(180, 180, 180, 1)" }}
-                    >
-                      <TableCell>Exclude</TableCell>
-                      <TableCell>Min Noise</TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }}>
-                        Min Gear Noise
-                      </TableCell>
-                      <TableCell component="th">Test Condition</TableCell>
-                      {generateEmptyCells()}
-                    </TableRow>
-                    {generateConditionRows()}
-                    <TableRow
-                      sx={{ borderTop: "2px solid rgba(180, 180, 180, 1)" }}
-                    >
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell component="th">
-                        Total Noise (non-excluded)
-                      </TableCell>
-                      {generateTotalNoisesNonExcluded()}
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </TableContainer>
-            <div
-              style={{
-                marginTop: "16px",
+                width: props.dimensions.width + "px",
+                height: props.dimensions.heightTitle + "px",
                 position: "relative",
-                display: "flex",
-                justifyContent: "center"
+                bgcolor: "section.main"
               }}
             >
-              <Stack spacing={1} sx={{ position: "absolute", left: "0px" }}>
+              <Typography
+                variant="h5"
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)"
+                }}
+              >
+                Carme Gear Selection
+              </Typography>
+              {showHelp && (
+                <Button
+                  variant="text"
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "16px",
+                    transform: "translate(0%, -50%)"
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ textDecoration: "underline" }}
+                  >
+                    Help
+                  </Typography>
+                </Button>
+              )}
+            </Box>
+            <Box
+              sx={{
+                width: props.dimensions.width + "px",
+                minHeight: props.dimensions.heightContent + "px",
+                boxSizing: "border-box",
+                padding: "24px",
+                position: "relative",
+                bgcolor: "section.main",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+              }}
+            >
+              <Typography>Transcap Table</Typography>
+              <TableContainer
+                component={Box}
+                sx={{
+                  marginTop: "16px",
+                  border: "2px solid rgba(128, 128, 128, 1)",
+                  overflowX: "auto"
+                }}
+              >
+                <div className={"jp-webds-gear-selection-table" + dark}>
+                  <Table padding="none" sx={{ tableLayout: "fixed" }}>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell component="th">Select</TableCell>
+                        {generateSelectButtons()}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell component="th">
+                          Integration Duration
+                        </TableCell>
+                        {generateIntegrationDurations()}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell component="th">Frequency (kHz)</TableCell>
+                        {generateFrequencies()}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell component="th">Overall Max Noise</TableCell>
+                        {generateMaxNoises()}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell component="th">
+                          Max Noise (non-excluded)
+                        </TableCell>
+                        {generateMaxNoisesNonExcluded()}
+                      </TableRow>
+                      <TableRow
+                        sx={{
+                          borderBottom: "2px solid rgba(128, 128, 128, 1)"
+                        }}
+                      >
+                        <TableCell>Exclude</TableCell>
+                        <TableCell>Min Noise</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>
+                          Min Gear Noise
+                        </TableCell>
+                        <TableCell component="th">Test Condition</TableCell>
+                        {generateEmptyCells()}
+                      </TableRow>
+                      {generateConditionRows()}
+                      <TableRow
+                        sx={{ borderTop: "2px solid rgba(128, 128, 128, 1)" }}
+                      >
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell component="th">
+                          Total Noise (non-excluded)
+                        </TableCell>
+                        {generateTotalNoisesNonExcluded()}
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+              </TableContainer>
+            </Box>
+            <Box
+              sx={{
+                width: props.dimensions.width + "px",
+                minHeight: props.dimensions.heightControls + "px",
+                boxSizing: "border-box",
+                padding: "24px",
+                position: "relative",
+                bgcolor: "section.main",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "top",
+                justifyContent: "space-between"
+              }}
+            >
+              <Stack spacing={1} sx={{ width: "150px" }}>
                 <Button
                   size="small"
-                  onClick={(event) => handleExcludeAllButtonClick(event)}
+                  onClick={() => handleExcludeAllButtonClick()}
                   sx={{
                     minWidth: "150px",
                     maxWidth: "150px",
@@ -668,7 +722,7 @@ export const Transcap = (props: any): JSX.Element => {
                 </Button>
                 <Button
                   size="small"
-                  onClick={(event) => handleClearExclusionsButtonClick(event)}
+                  onClick={() => handleClearExclusionsButtonClick()}
                   sx={{
                     minWidth: "150px",
                     maxWidth: "150px",
@@ -687,10 +741,34 @@ export const Transcap = (props: any): JSX.Element => {
                   label="&nbsp;Sort by Total Noise"
                 />
               </Stack>
-              <Stack spacing={1} sx={{ position: "absolute", right: "0px" }}>
+              <Stack spacing={2} direction="row">
+                <Stack>
+                  <Button
+                    onClick={() => handleBackButtonClick()}
+                    sx={{
+                      width: "150px",
+                      textTransform: "none"
+                    }}
+                  >
+                    Back
+                  </Button>
+                </Stack>
+                <Stack>
+                  <Button
+                    onClick={() => handleNextButtonClick()}
+                    sx={{
+                      width: "150px",
+                      textTransform: "none"
+                    }}
+                  >
+                    Next
+                  </Button>
+                </Stack>
+              </Stack>
+              <Stack spacing={1}>
                 <Button
                   size="small"
-                  onClick={(event) => handleTestButtonClick(event)}
+                  onClick={() => handleTestButtonClick()}
                   sx={{
                     minWidth: "150px",
                     maxWidth: "150px",
@@ -701,7 +779,7 @@ export const Transcap = (props: any): JSX.Element => {
                 </Button>
                 <Button
                   size="small"
-                  onClick={(event) => handleCommitButtonClick(event)}
+                  onClick={() => handleCommitButtonClick()}
                   sx={{
                     minWidth: "150px",
                     maxWidth: "150px",
@@ -711,28 +789,8 @@ export const Transcap = (props: any): JSX.Element => {
                   Commit
                 </Button>
               </Stack>
-              <Stack spacing={2} direction="row">
-                <Button
-                  onClick={(event) => handleBackButtonClick(event)}
-                  sx={{
-                    width: "100px",
-                    textTransform: "none"
-                  }}
-                >
-                  Back
-                </Button>
-                <Button
-                  onClick={(event) => handleNextButtonClick(event)}
-                  sx={{
-                    width: "100px",
-                    textTransform: "none"
-                  }}
-                >
-                  Next
-                </Button>
-              </Stack>
-            </div>
-          </Box>
+            </Box>
+          </Stack>
           <Dialog open={openDialog} onClose={handleDialogClose}>
             <DialogTitle sx={{ textAlign: "center" }}>
               {dialogTitle}
@@ -761,17 +819,17 @@ export const Transcap = (props: any): JSX.Element => {
             </DialogContent>
             <DialogActions>
               <Button
-                disabled={!selectedGears[0] || !selectedGears[0].frequency}
-                onClick={(event) => handleDialogWriteButtonClick(event)}
-                sx={{ width: "100px" }}
-              >
-                Write
-              </Button>
-              <Button
-                onClick={(event) => handleDialogCancelButtonClick(event)}
+                onClick={() => handleDialogCancelButtonClick()}
                 sx={{ width: "100px" }}
               >
                 Cancel
+              </Button>
+              <Button
+                disabled={!selectedGears[0] || !selectedGears[0].frequency}
+                onClick={() => handleDialogWriteButtonClick()}
+                sx={{ width: "100px" }}
+              >
+                Write
               </Button>
             </DialogActions>
           </Dialog>

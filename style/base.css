@@ -20,3 +20,21 @@
     text-align: center;
     white-space: normal !important;
   }
+
+  .jp-webds-gear-selection-table-dark th {
+    width: 180px;
+    border-top: 1px solid rgba(64, 64, 64, 1);
+    border-bottom: 1px solid rgba(64, 64, 64, 1);
+    border-left: 1px solid rgba(64, 64, 64, 1);
+    border-right: 2px solid rgba(128, 128, 128, 1);
+    padding: 5px 10px 5px 0px;
+    text-align: right;
+  }
+
+  .jp-webds-gear-selection-table-dark td {
+    width: 70px;
+    border: 1px solid rgba(64, 64, 64, 1);
+    padding: 5px 0px 5px 0px;
+    text-align: center;
+    white-space: normal !important;
+  }

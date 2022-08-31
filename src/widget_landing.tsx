@@ -11,8 +11,8 @@ import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 
 import IconButton from "@mui/material/IconButton";
-import AddBoxIcon from "@mui/icons-material/AddBox";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddBoxIcon from "@mui/icons-material/AddBox";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -28,34 +28,26 @@ import Typography from "@mui/material/Typography";
 
 import { NoiseCondition, Page } from "./widget_container";
 
-const LIST_HEIGHT_OFFSET = -2 - 16 * 2 - 64 - 24 - 1 - 24 - 24;
-
-let conditionsListHeight = 0;
+const showHelp = false;
 
 export const Landing = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [intDurMin, setIntDurMin] = useState<number>(props.intDurMin);
   const [intDurSteps, setIntDurSteps] = useState<number>(props.intDurSteps);
-  const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>(
-    props.noiseConditions
-  );
+  const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
   const [noiseConditionEntry, setNoiseConditionEntry] = useState<any>({
     id: null,
     name: "Noise Condition"
   });
+  const [listRightPdding, setListRightPadding] = useState(0);
 
-  const handleAddButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleAddButtonClick = () => {
     setNoiseConditionEntry({ id: null, name: "Noise Condition" });
     setOpenDialog(true);
   };
 
-  const handleDeleteButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    id: string
-  ) => {
+  const handleDeleteButtonClick = (id: string) => {
     const items = noiseConditions.filter((item: any) => item.id !== id);
     setNoiseConditions(items);
   };
@@ -67,11 +59,7 @@ export const Landing = (props: any): JSX.Element => {
     props.changePage(page);
   };
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    id: string,
-    name: string
-  ) => {
+  const handleListItemClick = (id: string, name: string) => {
     setNoiseConditionEntry({ id, name });
     setOpenDialog(true);
   };
@@ -101,15 +89,11 @@ export const Landing = (props: any): JSX.Element => {
     handleDialogClose();
   };
 
-  const handleDialogDoneButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleDialogDoneButtonClick = () => {
     handleDialogDone();
   };
 
-  const handleDialogCancelButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleDialogCancelButtonClick = () => {
     handleDialogClose();
   };
 
@@ -161,14 +145,14 @@ export const Landing = (props: any): JSX.Element => {
             <IconButton
               color="error"
               edge="start"
-              onClick={(event) => handleDeleteButtonClick(event, id)}
+              onClick={() => handleDeleteButtonClick(id)}
             >
               <DeleteIcon />
             </IconButton>
           }
         >
           <ListItemButton
-            onClick={(event) => handleListItemClick(event, id, name)}
+            onClick={() => handleListItemClick(id, name)}
             sx={{ marginRight: "15px", padding: "0px 16px" }}
           >
             <ListItemText primary={name} />
@@ -186,130 +170,175 @@ export const Landing = (props: any): JSX.Element => {
   }, [openDialog]);
 
   useEffect(() => {
-    conditionsListHeight = props.height + LIST_HEIGHT_OFFSET;
+    const element = document.getElementById(
+      "webds_gear_selection_landing_noise_conditions_list"
+    );
+    if (element && element.scrollHeight > element.clientHeight) {
+      setListRightPadding(8);
+    } else {
+      setListRightPadding(0);
+    }
+  }, [noiseConditions]);
+
+  useEffect(() => {
+    setNoiseConditions(props.noiseConditions);
     setInitialized(true);
-  }, [props.height]);
+  }, [props.noiseConditions]);
 
   return (
     <>
       {initialized ? (
         <>
-          <Box sx={{ width: props.width + "px" }}>
-            <Typography
-              variant="h5"
-              sx={{ height: "50px", textAlign: "center" }}
-            >
-              Carme Gear Selection
-            </Typography>
-            <Typography sx={{ height: "25px", textAlign: "center" }}>
-              Configuration
-            </Typography>
+          <Stack spacing={2}>
             <Box
               sx={{
-                height: props.height + "px",
-                boxSizing: "border-box",
-                border: 1,
-                borderRadius: 1,
-                borderColor: "grey.500",
-                padding: "16px"
+                width: props.dimensions.width + "px",
+                height: props.dimensions.heightTitle + "px",
+                position: "relative",
+                bgcolor: "section.main"
               }}
             >
-              <Stack spacing={3} divider={<Divider orientation="horizontal" />}>
-                <Stack justifyContent="center" spacing={10} direction="row">
-                  <div>
-                    <Typography id="minIntDurText">Minimum Int-Dur</Typography>
-                    <FormControl
-                      variant="outlined"
-                      size="small"
-                      sx={{ width: "150px" }}
-                    >
-                      <OutlinedInput
-                        id="minIntDur"
-                        value={intDurMin}
-                        onChange={(event) =>
-                          handleIntDurInputChange(
-                            event.target.id,
-                            event.target.value
-                          )
-                        }
-                      />
-                    </FormControl>
-                  </div>
-                  <div>
-                    <Typography id="intDurStepsText">Int-Dur Steps</Typography>
-                    <FormControl
-                      variant="outlined"
-                      size="small"
-                      sx={{ width: "150px" }}
-                    >
-                      <OutlinedInput
-                        id="intDurSteps"
-                        value={intDurSteps}
-                        onChange={(event) =>
-                          handleIntDurInputChange(
-                            event.target.id,
-                            event.target.value
-                          )
-                        }
-                      />
-                    </FormControl>
-                  </div>
-                </Stack>
-                <div>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Noise Conditions
-                  </Typography>
-                  <Box
-                    sx={{
-                      height: conditionsListHeight + "px",
-                      overflow: "auto"
-                    }}
+              <Typography
+                variant="h5"
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)"
+                }}
+              >
+                Carme Gear Selection
+              </Typography>
+              {showHelp && (
+                <Button
+                  variant="text"
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "16px",
+                    transform: "translate(0%, -50%)"
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ textDecoration: "underline" }}
                   >
-                    <Stack justifyContent="center" direction="row">
-                      <List sx={{ width: "85%" }}>{generateListItems()}</List>
-                    </Stack>
-                    <Stack justifyContent="center" direction="row">
-                      <IconButton
-                        id="addNoiseConditionButton"
-                        color="primary"
-                        onClick={(event) => handleAddButtonClick(event)}
-                        sx={{ marginTop: "5px" }}
-                      >
-                        <AddBoxIcon />
-                      </IconButton>
-                    </Stack>
-                  </Box>
+                    Help
+                  </Typography>
+                </Button>
+              )}
+            </Box>
+            <Box
+              sx={{
+                width: props.dimensions.width + "px",
+                height: props.dimensions.heightContent + "px",
+                boxSizing: "border-box",
+                padding: "24px",
+                position: "relative",
+                bgcolor: "section.main",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+              }}
+            >
+              <Stack justifyContent="center" spacing={10} direction="row">
+                <div>
+                  <Typography id="minIntDurText">Minimum Int-Dur</Typography>
+                  <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{ width: "150px" }}
+                  >
+                    <OutlinedInput
+                      id="minIntDur"
+                      value={intDurMin}
+                      onChange={(event) =>
+                        handleIntDurInputChange(
+                          event.target.id,
+                          event.target.value
+                        )
+                      }
+                    />
+                  </FormControl>
+                </div>
+                <div>
+                  <Typography id="intDurStepsText">Int-Dur Steps</Typography>
+                  <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{ width: "150px" }}
+                  >
+                    <OutlinedInput
+                      id="intDurSteps"
+                      value={intDurSteps}
+                      onChange={(event) =>
+                        handleIntDurInputChange(
+                          event.target.id,
+                          event.target.value
+                        )
+                      }
+                    />
+                  </FormControl>
                 </div>
               </Stack>
+              <Divider
+                orientation="horizontal"
+                sx={{ width: "100%", marginTop: "24px" }}
+              />
+              <Typography sx={{ marginTop: "24px" }}>
+                Noise Conditions
+              </Typography>
+              <div
+                id="webds_gear_selection_landing_noise_conditions_list"
+                style={{
+                  width: "75%",
+                  marginTop: "16px",
+                  paddingRight: listRightPdding,
+                  overflow: "auto"
+                }}
+              >
+                <List>{generateListItems()}</List>
+                <Stack justifyContent="center" direction="row">
+                  <IconButton
+                    id="addNoiseConditionButton"
+                    color="primary"
+                    onClick={() => handleAddButtonClick()}
+                    sx={{ marginTop: "8px" }}
+                  >
+                    <AddBoxIcon />
+                  </IconButton>
+                </Stack>
+              </div>
             </Box>
-            <div
-              style={{
-                marginTop: "20px",
+            <Box
+              sx={{
+                width: props.dimensions.width + "px",
+                minHeight: props.dimensions.heightControls + "px",
+                boxSizing: "border-box",
+                padding: "24px",
                 position: "relative",
+                bgcolor: "section.main",
                 display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
                 justifyContent: "center"
               }}
             >
-              {noiseConditions.length ? (
-                <Button
-                  onClick={() => handleChangePageButtonClick(Page.Sweep)}
-                  sx={{ width: "100px" }}
-                >
-                  Start
-                </Button>
-              ) : (
-                <Button disabled sx={{ width: "100px" }}>
-                  Start
-                </Button>
-              )}
+              <Button
+                disabled={noiseConditions.length === 0}
+                onClick={() => handleChangePageButtonClick(Page.Sweep)}
+                sx={{ width: "150px" }}
+              >
+                Start
+              </Button>
               <Button
                 variant="text"
                 onClick={() => handleChangePageButtonClick(Page.Advanced)}
                 sx={{
                   position: "absolute",
-                  top: "5px",
-                  right: "0px",
-                  textTransform: "none"
+                  top: "50%",
+                  right: "24px",
+                  transform: "translate(0%, -50%)"
                 }}
               >
                 <Typography
@@ -319,8 +348,8 @@ export const Landing = (props: any): JSX.Element => {
                   Advanced Settings
                 </Typography>
               </Button>
-            </div>
-          </Box>
+            </Box>
+          </Stack>
           <Dialog
             fullWidth
             maxWidth="xs"
@@ -329,31 +358,30 @@ export const Landing = (props: any): JSX.Element => {
           >
             <DialogContent>
               <TextField
-                autoFocus
                 fullWidth
-                label="Name of Noise Condition"
-                value={noiseConditionEntry.name}
-                type="text"
                 variant="standard"
+                label="Name of Noise Condition"
+                type="text"
+                value={noiseConditionEntry.name}
+                onChange={handleTextFieldChange}
+                onKeyDown={handleTextFieldKeyDown}
                 InputLabelProps={{
                   shrink: true
                 }}
-                onChange={handleTextFieldChange}
-                onKeyDown={handleTextFieldKeyDown}
               />
             </DialogContent>
             <DialogActions>
               <Button
-                onClick={(event) => handleDialogDoneButtonClick(event)}
-                sx={{ width: "75px" }}
-              >
-                Done
-              </Button>
-              <Button
-                onClick={(event) => handleDialogCancelButtonClick(event)}
-                sx={{ width: "75px" }}
+                onClick={() => handleDialogCancelButtonClick()}
+                sx={{ width: "100px" }}
               >
                 Cancel
+              </Button>
+              <Button
+                onClick={() => handleDialogDoneButtonClick()}
+                sx={{ width: "100px" }}
+              >
+                Done
               </Button>
             </DialogActions>
           </Dialog>

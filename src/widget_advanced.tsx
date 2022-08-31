@@ -1,33 +1,68 @@
 import React, { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
+import MuiAccordion, { AccordionProps } from "@mui/material/Accordion";
+import MuiAccordionSummary, {
+  AccordionSummaryProps
+} from "@mui/material/AccordionSummary";
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 
-import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 
 import { Page } from "./widget_container";
 
+const showHelp = false;
+
+const Accordion = styled((props: AccordionProps) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  "&:not(:last-child)": {
+    marginBottom: "8px"
+  },
+  "&:before": {
+    display: "none"
+  }
+}));
+
+const AccordionSummary = styled((props: AccordionSummaryProps) => (
+  <MuiAccordionSummary
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+    {...props}
+  />
+))(({ theme }) => ({
+  backgroundColor:
+    theme.palette.mode === "dark"
+      ? "rgba(255, 255, 255, .05)"
+      : "rgba(0, 0, 0, .03)",
+  flexDirection: "row-reverse",
+  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+    transform: "rotate(90deg)"
+  },
+  "& .MuiAccordionSummary-content": {
+    marginLeft: theme.spacing(1)
+  }
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderTop: "1px solid rgba(0, 0, 0, .125)"
+}));
+
 export const Advanced = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(true);
-  const [accordionExpanded, setAccordionExpanded] = useState<boolean>(false);
   const [baselineFrames, setBaselineFrames] = useState<number>(0);
   const [gramDataFrames, setGramDataFrames] = useState<number>(0);
 
-  const handleAccordionExpandedChange = (expanded: boolean) => {
-    setAccordionExpanded(expanded);
-  };
-
-  const handleDoneButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleDoneButtonClick = () => {
     props.setBaselineFrames(baselineFrames);
     props.setGramDataFrames(gramDataFrames);
     props.changePage(Page.Landing);
@@ -58,112 +93,145 @@ export const Advanced = (props: any): JSX.Element => {
     <>
       {initialized ? (
         <>
-          <Box sx={{ width: props.width + "px" }}>
-            <Typography
-              variant="h5"
-              sx={{ height: "50px", textAlign: "center" }}
-            >
-              Carme Gear Selection
-            </Typography>
-            <Typography sx={{ height: "25px", textAlign: "center" }}>
-              Advanced Settings
-            </Typography>
+          <Stack spacing={2}>
             <Box
               sx={{
-                height: props.height + "px",
-                boxSizing: "border-box",
-                border: 1,
-                borderRadius: 1,
-                borderColor: "grey.500",
-                padding: "16px"
+                width: props.dimensions.width + "px",
+                height: props.dimensions.heightTitle + "px",
+                position: "relative",
+                bgcolor: "section.main"
               }}
             >
-              <Accordion
-                onChange={(event, expanded) =>
-                  handleAccordionExpandedChange(expanded)
-                }
+              <Typography
+                variant="h5"
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)"
+                }}
               >
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                  <Typography sx={{ width: "25%", flexShrink: 0 }}>
-                    Covariance Params
+                Carme Gear Selection
+              </Typography>
+              {showHelp && (
+                <Button
+                  variant="text"
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "16px",
+                    transform: "translate(0%, -50%)"
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ textDecoration: "underline" }}
+                  >
+                    Help
                   </Typography>
-                  {accordionExpanded ? null : (
+                </Button>
+              )}
+            </Box>
+            <Box
+              sx={{
+                width: props.dimensions.width + "px",
+                height: props.dimensions.heightContent + "px",
+                boxSizing: "border-box",
+                padding: "24px",
+                position: "relative",
+                bgcolor: "section.main",
+                display: "flex",
+                flexDirection: "column"
+              }}
+            >
+              <div style={{ margin: "0px auto 24px auto" }}>
+                <Typography>Advanced Settings</Typography>
+              </div>
+              <div style={{ overflow: "auto" }}>
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Typography sx={{ width: "25%", flexShrink: 0 }}>
+                      Covariance Params
+                    </Typography>
+
                     <Typography
                       sx={{ paddingLeft: "4px", color: "text.secondary" }}
                     >
                       Baseline Frames: {baselineFrames}, Gram Data Frames:{" "}
                       {gramDataFrames}
                     </Typography>
-                  )}
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Stack
-                    spacing={5}
-                    direction="row"
-                    sx={{ paddingLeft: "25%" }}
-                  >
-                    <div>
-                      <Typography id="baselineFramesText">
-                        Baseline Frames
-                      </Typography>
-                      <FormControl
-                        variant="outlined"
-                        size="small"
-                        sx={{ width: "150px" }}
-                      >
-                        <OutlinedInput
-                          id="baselineFrames"
-                          value={baselineFrames}
-                          onChange={(event) =>
-                            handleCovarianceInputChange(
-                              event.target.id,
-                              event.target.value
-                            )
-                          }
-                        />
-                      </FormControl>
-                    </div>
-                    <div>
-                      <Typography id="gramDataFramesText">
-                        Gram Data Frames
-                      </Typography>
-                      <FormControl
-                        variant="outlined"
-                        size="small"
-                        sx={{ width: "150px" }}
-                      >
-                        <OutlinedInput
-                          id="gramDataFrames"
-                          value={gramDataFrames}
-                          onChange={(event) =>
-                            handleCovarianceInputChange(
-                              event.target.id,
-                              event.target.value
-                            )
-                          }
-                        />
-                      </FormControl>
-                    </div>
-                  </Stack>
-                </AccordionDetails>
-              </Accordion>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Stack justifyContent="center" spacing={5} direction="row">
+                      <div>
+                        <Typography>Baseline Frames</Typography>
+                        <FormControl
+                          variant="outlined"
+                          size="small"
+                          sx={{ width: "150px" }}
+                        >
+                          <OutlinedInput
+                            id="baselineFrames"
+                            value={baselineFrames}
+                            onChange={(event) =>
+                              handleCovarianceInputChange(
+                                event.target.id,
+                                event.target.value
+                              )
+                            }
+                          />
+                        </FormControl>
+                      </div>
+                      <div>
+                        <Typography>Gram Data Frames</Typography>
+                        <FormControl
+                          variant="outlined"
+                          size="small"
+                          sx={{ width: "150px" }}
+                        >
+                          <OutlinedInput
+                            id="gramDataFrames"
+                            value={gramDataFrames}
+                            onChange={(event) =>
+                              handleCovarianceInputChange(
+                                event.target.id,
+                                event.target.value
+                              )
+                            }
+                          />
+                        </FormControl>
+                      </div>
+                    </Stack>
+                  </AccordionDetails>
+                </Accordion>
+              </div>
             </Box>
-            <div
-              style={{
-                marginTop: "20px",
+            <Box
+              sx={{
+                width: props.dimensions.width + "px",
+                minHeight: props.dimensions.heightControls + "px",
                 position: "relative",
+                bgcolor: "section.main",
                 display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
                 justifyContent: "center"
               }}
             >
-              <Button
-                onClick={(event) => handleDoneButtonClick(event)}
-                sx={{ width: "100px" }}
+              <div
+                style={{
+                  margin: "24px"
+                }}
               >
-                Done
-              </Button>
-            </div>
-          </Box>
+                <Button
+                  onClick={() => handleDoneButtonClick()}
+                  sx={{ width: "150px" }}
+                >
+                  Done
+                </Button>
+              </div>
+            </Box>
+          </Stack>
         </>
       ) : null}
     </>

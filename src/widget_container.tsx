@@ -52,15 +52,23 @@ export type NoiseDataSet = {
 
 export type NoiseData = NoiseDataSet[];
 
-const WIDTH = 800;
-const HEIGHT = 450;
-const TABLE_WIDTH = 1000;
+const WIDTH = 1000;
+const HEIGHT_TITLE = 70;
+const HEIGHT_CONTENT = 450;
+const HEIGHT_CONTROLS = 120;
 
 const DEFAULT_INT_DUR_MIN = 24;
 const DEFAULT_INT_DUR_STEPS = 75;
 
 const DEFAULT_BASELINE_FRAMES = 16;
 const DEFAULT_GRAM_DATA_FRAMES = 400;
+
+const dimensions = {
+  width: WIDTH,
+  heightTitle: HEIGHT_TITLE,
+  heightContent: HEIGHT_CONTENT,
+  heightControls: HEIGHT_CONTROLS
+};
 
 let alertMessage = "";
 
@@ -95,8 +103,7 @@ const GearSelectionContainer = (props: any): JSX.Element => {
       case Page.Landing:
         return (
           <Landing
-            width={WIDTH}
-            height={HEIGHT}
+            dimensions={dimensions}
             changePage={changePage}
             intDurMin={intDurMin}
             setIntDurMin={setIntDurMin}
@@ -109,8 +116,7 @@ const GearSelectionContainer = (props: any): JSX.Element => {
       case Page.Advanced:
         return (
           <Advanced
-            width={WIDTH}
-            height={HEIGHT}
+            dimensions={dimensions}
             changePage={changePage}
             baselineFrames={baselineFrames}
             setBaselineFrames={setBaselineFrames}
@@ -121,8 +127,7 @@ const GearSelectionContainer = (props: any): JSX.Element => {
       case Page.Sweep:
         return (
           <Sweep
-            width={WIDTH}
-            height={HEIGHT}
+            dimensions={dimensions}
             changePage={changePage}
             numGears={numGears}
             intDurMin={intDurMin}
@@ -136,7 +141,7 @@ const GearSelectionContainer = (props: any): JSX.Element => {
       case Page.Transcap:
         return (
           <Transcap
-            width={TABLE_WIDTH}
+            dimensions={dimensions}
             changePage={changePage}
             numGears={numGears}
             noiseData={noiseData}
@@ -145,7 +150,7 @@ const GearSelectionContainer = (props: any): JSX.Element => {
       case Page.Abscap:
         return (
           <Abscap
-            width={TABLE_WIDTH}
+            dimensions={dimensions}
             changePage={changePage}
             numGears={numGears}
             noiseData={noiseData}
