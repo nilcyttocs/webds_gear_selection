@@ -713,8 +713,7 @@ export const Transcap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleExcludeAllButtonClick()}
                   sx={{
-                    minWidth: "150px",
-                    maxWidth: "150px",
+                    width: "120px",
                     textTransform: "none"
                   }}
                 >
@@ -724,12 +723,11 @@ export const Transcap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleClearExclusionsButtonClick()}
                   sx={{
-                    minWidth: "150px",
-                    maxWidth: "150px",
+                    width: "120px",
                     textTransform: "none"
                   }}
                 >
-                  Clear Exclusions
+                  Exclude None
                 </Button>
                 <FormControlLabel
                   control={
@@ -770,8 +768,7 @@ export const Transcap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleTestButtonClick()}
                   sx={{
-                    minWidth: "150px",
-                    maxWidth: "150px",
+                    width: "120px",
                     textTransform: "none"
                   }}
                 >
@@ -781,8 +778,7 @@ export const Transcap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleCommitButtonClick()}
                   sx={{
-                    minWidth: "150px",
-                    maxWidth: "150px",
+                    width: "120px",
                     textTransform: "none"
                   }}
                 >
