@@ -72,8 +72,11 @@ const dimensions = {
 
 let alertMessage = "";
 
-const alertMessageConfigJSON =
+const alertMessagePublicConfigJSON =
   "Failed to retrieve config JSON file. Please check in file browser in left sidebar and ensure availability of config JSON file in /Packrat/ directory (e.g. /Packrat/1234567/config.json for PR1234567).";
+
+const alertMessagePrivateConfigJSON =
+  "Failed to retrieve config JSON file. Please check in file browser in left sidebar and ensure availability of config JSON file in /Packrat/ directory (e.g. /Packrat/1234567/config_private.json for PR1234567).";
 
 const alertMessageStaticConfig =
   "Failed to read static config and obtain gear information from device. Please ensure device and running firmware support Carme gear selection.";
@@ -162,11 +165,22 @@ const GearSelectionContainer = (props: any): JSX.Element => {
   };
 
   const initialize = async () => {
+    const external = props.service.pinormos
+      .getOSInfo()
+      .current.version.endsWith("E");
     try {
-      await props.service.packrat.cache.addPrivateConfig();
+      if (external) {
+        await props.service.packrat.cache.addPublicConfig();
+      } else {
+        await props.service.packrat.cache.addPrivateConfig();
+      }
     } catch (error) {
       console.error(error);
-      alertMessage = alertMessageConfigJSON;
+      if (external) {
+        alertMessage = alertMessagePublicConfigJSON;
+      } else {
+        alertMessage = alertMessagePrivateConfigJSON;
+      }
       setAlert(true);
       return;
     }
