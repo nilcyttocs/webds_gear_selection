@@ -12,7 +12,7 @@ import { WebDSService, WebDSWidget } from "@webds/service";
 
 import { gearSelectionIcon } from "./icons";
 
-import { GearSelectionWidget } from "./widget_container";
+import GearSelectionWidget from "./widget/GearSelectionWidget";
 
 namespace Attributes {
   export const command = "webds_gear_selection:open";

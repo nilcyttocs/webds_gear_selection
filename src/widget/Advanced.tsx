@@ -17,7 +17,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 
 import { styled } from "@mui/material/styles";
 
-import { Page } from "./widget_container";
+import { Page } from "./GearSelectionComponent";
 
 const showHelp = false;
 
@@ -237,3 +237,5 @@ export const Advanced = (props: any): JSX.Element => {
     </>
   );
 };
+
+export default Advanced;

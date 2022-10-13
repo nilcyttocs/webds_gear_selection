@@ -14,14 +14,14 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 
-import { requestAPI } from "./handler";
-
 import {
   NoiseData,
   NoiseDataSet,
   NoiseCondition,
   Page
-} from "./widget_container";
+} from "./GearSelectionComponent";
+
+import { requestAPI } from "../handler";
 
 const SSE_CLOSED = 2;
 
@@ -481,3 +481,5 @@ export const Sweep = (props: any): JSX.Element => {
     </>
   );
 };
+
+export default Sweep;

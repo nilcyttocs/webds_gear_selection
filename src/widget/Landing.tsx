@@ -26,7 +26,7 @@ import TextField from "@mui/material/TextField";
 
 import Typography from "@mui/material/Typography";
 
-import { NoiseCondition, Page } from "./widget_container";
+import { NoiseCondition, Page } from "./GearSelectionComponent";
 
 const showHelp = false;
 
@@ -390,3 +390,5 @@ export const Landing = (props: any): JSX.Element => {
     </>
   );
 };
+
+export default Landing;

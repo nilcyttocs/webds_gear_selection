@@ -28,15 +28,15 @@ import Typography from "@mui/material/Typography";
 
 import { useTheme } from "@mui/material/styles";
 
-import { requestAPI } from "./handler";
-
 import {
   Page,
   NoiseData,
   NoiseDataSet,
   NoiseDataEntry,
   NoiseCondition
-} from "./widget_container";
+} from "./GearSelectionComponent";
+
+import { requestAPI } from "../handler";
 
 const ISTRETCH = 9;
 const RESET = 10;
@@ -834,3 +834,5 @@ export const Transcap = (props: any): JSX.Element => {
     </>
   );
 };
+
+export default Transcap;
