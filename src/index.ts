@@ -20,7 +20,7 @@ namespace Attributes {
   export const label = "Gear Selection";
   export const caption = "Gear Selection";
   export const category = "Touch - Config Library";
-  export const rank = 20;
+  export const rank = 50;
 }
 
 /**
