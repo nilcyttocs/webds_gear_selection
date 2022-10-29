@@ -33,8 +33,10 @@ const showHelp = false;
 export const Landing = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [intDurMin, setIntDurMin] = useState<number>(props.intDurMin);
-  const [intDurSteps, setIntDurSteps] = useState<number>(props.intDurSteps);
+  const [intDurMin, setIntDurMin] = useState<number | null>(props.intDurMin);
+  const [intDurSteps, setIntDurSteps] = useState<number | null>(
+    props.intDurSteps
+  );
   const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
   const [noiseConditionEntry, setNoiseConditionEntry] = useState<any>({
     id: null,
@@ -125,11 +127,14 @@ export const Landing = (props: any): JSX.Element => {
       return;
     }
     if (value === "") {
-      value = "0";
+      if (id === "intDurMin") {
+        setIntDurMin(null);
+      } else if (id === "intDurSteps") setIntDurSteps(null);
+      return;
     }
     const num = parseInt(value, 10);
     if (num < 4096) {
-      if (id === "minIntDur") {
+      if (id === "intDurMin") {
         setIntDurMin(num);
       } else if (id === "intDurSteps") setIntDurSteps(num);
     }
@@ -195,7 +200,7 @@ export const Landing = (props: any): JSX.Element => {
                 width: props.dimensions.width + "px",
                 height: props.dimensions.heightTitle + "px",
                 position: "relative",
-                bgcolor: "section.main"
+                bgcolor: "section.background"
               }}
             >
               <Typography
@@ -219,12 +224,7 @@ export const Landing = (props: any): JSX.Element => {
                     transform: "translate(0%, -50%)"
                   }}
                 >
-                  <Typography
-                    variant="body2"
-                    sx={{ textDecoration: "underline" }}
-                  >
-                    Help
-                  </Typography>
+                  <Typography variant="underline">Help</Typography>
                 </Button>
               )}
             </Box>
@@ -235,7 +235,7 @@ export const Landing = (props: any): JSX.Element => {
                 boxSizing: "border-box",
                 padding: "24px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center"
@@ -250,7 +250,7 @@ export const Landing = (props: any): JSX.Element => {
                     sx={{ width: "150px" }}
                   >
                     <OutlinedInput
-                      id="minIntDur"
+                      id="intDurMin"
                       value={intDurMin}
                       onChange={(event) =>
                         handleIntDurInputChange(
@@ -317,7 +317,7 @@ export const Landing = (props: any): JSX.Element => {
                 boxSizing: "border-box",
                 padding: "24px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -325,7 +325,11 @@ export const Landing = (props: any): JSX.Element => {
               }}
             >
               <Button
-                disabled={noiseConditions.length === 0}
+                disabled={
+                  intDurMin === null ||
+                  intDurSteps == null ||
+                  noiseConditions.length === 0
+                }
                 onClick={() => handleChangePageButtonClick(Page.Sweep)}
                 sx={{ width: "150px" }}
               >
@@ -341,12 +345,7 @@ export const Landing = (props: any): JSX.Element => {
                   transform: "translate(0%, -50%)"
                 }}
               >
-                <Typography
-                  variant="body2"
-                  sx={{ textDecoration: "underline" }}
-                >
-                  Advanced Settings
-                </Typography>
+                <Typography variant="underline">Advanced Settings</Typography>
               </Button>
             </Box>
           </Stack>

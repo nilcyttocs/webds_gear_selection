@@ -567,7 +567,7 @@ export const Transcap = (props: any): JSX.Element => {
                 width: props.dimensions.width + "px",
                 height: props.dimensions.heightTitle + "px",
                 position: "relative",
-                bgcolor: "section.main"
+                bgcolor: "section.background"
               }}
             >
               <Typography
@@ -591,12 +591,7 @@ export const Transcap = (props: any): JSX.Element => {
                     transform: "translate(0%, -50%)"
                   }}
                 >
-                  <Typography
-                    variant="body2"
-                    sx={{ textDecoration: "underline" }}
-                  >
-                    Help
-                  </Typography>
+                  <Typography variant="underline">Help</Typography>
                 </Button>
               )}
             </Box>
@@ -607,7 +602,7 @@ export const Transcap = (props: any): JSX.Element => {
                 boxSizing: "border-box",
                 padding: "24px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center"
@@ -701,7 +696,7 @@ export const Transcap = (props: any): JSX.Element => {
                 boxSizing: "border-box",
                 padding: "24px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "top",
@@ -737,6 +732,11 @@ export const Transcap = (props: any): JSX.Element => {
                     />
                   }
                   label="&nbsp;Sort by Total Noise"
+                  sx={{
+                    "& .MuiTypography-root": {
+                      fontSize: "0.875rem"
+                    }
+                  }}
                 />
               </Stack>
               <Stack spacing={2} direction="row">

@@ -30,7 +30,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 
-import { useTheme } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 
 import {
   Page,
@@ -98,6 +98,12 @@ let alertMessage = "";
 const alertMessageWriteToFlash = "Failed to write gear settings to flash.";
 
 const alertMessageWriteToRAM = "Failed to write gear settings to RAM.";
+
+const CustomFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+  "& .MuiTypography-root": {
+    fontSize: "0.875rem"
+  }
+}));
 
 const sendSetAbsGearsRequest = async (
   selections: number[],
@@ -810,7 +816,7 @@ export const Abscap = (props: any): JSX.Element => {
                 width: props.dimensions.width + "px",
                 height: props.dimensions.heightTitle + "px",
                 position: "relative",
-                bgcolor: "section.main"
+                bgcolor: "section.background"
               }}
             >
               <Typography
@@ -834,12 +840,7 @@ export const Abscap = (props: any): JSX.Element => {
                     transform: "translate(0%, -50%)"
                   }}
                 >
-                  <Typography
-                    variant="body2"
-                    sx={{ textDecoration: "underline" }}
-                  >
-                    Help
-                  </Typography>
+                  <Typography variant="underline">Help</Typography>
                 </Button>
               )}
             </Box>
@@ -850,7 +851,7 @@ export const Abscap = (props: any): JSX.Element => {
                 boxSizing: "border-box",
                 padding: "24px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center"
@@ -944,7 +945,7 @@ export const Abscap = (props: any): JSX.Element => {
                 boxSizing: "border-box",
                 padding: "24px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "top",
@@ -972,7 +973,7 @@ export const Abscap = (props: any): JSX.Element => {
                 >
                   Exclude None
                 </Button>
-                <FormControlLabel
+                <CustomFormControlLabel
                   control={
                     <Checkbox
                       onChange={(event) => handleSortCheckboxClick(event)}
@@ -981,7 +982,7 @@ export const Abscap = (props: any): JSX.Element => {
                   }
                   label="&nbsp;Sort by Total Noise"
                 />
-                <FormControlLabel
+                <CustomFormControlLabel
                   control={
                     <Checkbox
                       onChange={(event) => handleHideXYCheckboxClick(event)}
@@ -990,7 +991,7 @@ export const Abscap = (props: any): JSX.Element => {
                   }
                   label="&nbsp;Hide X/Y"
                 />
-                <FormControlLabel
+                <CustomFormControlLabel
                   control={
                     <Checkbox
                       onChange={(event) =>

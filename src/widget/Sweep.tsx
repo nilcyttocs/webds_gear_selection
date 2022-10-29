@@ -357,7 +357,7 @@ export const Sweep = (props: any): JSX.Element => {
                 width: props.dimensions.width + "px",
                 height: props.dimensions.heightTitle + "px",
                 position: "relative",
-                bgcolor: "section.main"
+                bgcolor: "section.background"
               }}
             >
               <Typography
@@ -381,12 +381,7 @@ export const Sweep = (props: any): JSX.Element => {
                     transform: "translate(0%, -50%)"
                   }}
                 >
-                  <Typography
-                    variant="body2"
-                    sx={{ textDecoration: "underline" }}
-                  >
-                    Help
-                  </Typography>
+                  <Typography variant="underline">Help</Typography>
                 </Button>
               )}
             </Box>
@@ -397,7 +392,7 @@ export const Sweep = (props: any): JSX.Element => {
                 boxSizing: "border-box",
                 padding: "24px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center"
@@ -443,7 +438,7 @@ export const Sweep = (props: any): JSX.Element => {
                 boxSizing: "border-box",
                 padding: "24px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -467,12 +462,7 @@ export const Sweep = (props: any): JSX.Element => {
                   transform: "translate(0%, -50%)"
                 }}
               >
-                <Typography
-                  variant="body2"
-                  sx={{ textDecoration: "underline" }}
-                >
-                  Abort
-                </Typography>
+                <Typography variant="underline">Abort</Typography>
               </Button>
             </Box>
           </Stack>

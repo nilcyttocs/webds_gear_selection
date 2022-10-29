@@ -59,8 +59,8 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 export const Advanced = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(true);
-  const [baselineFrames, setBaselineFrames] = useState<number>(0);
-  const [gramDataFrames, setGramDataFrames] = useState<number>(0);
+  const [baselineFrames, setBaselineFrames] = useState<number | null>();
+  const [gramDataFrames, setGramDataFrames] = useState<number | null>();
 
   const handleDoneButtonClick = () => {
     props.setBaselineFrames(baselineFrames);
@@ -73,7 +73,10 @@ export const Advanced = (props: any): JSX.Element => {
       return;
     }
     if (value === "") {
-      value = "0";
+      if (id === "baselineFrames") {
+        setBaselineFrames(null);
+      } else if (id === "gramDataFrames") setGramDataFrames(null);
+      return;
     }
     const num = parseInt(value, 10);
     if (num < 4096) {
@@ -99,7 +102,7 @@ export const Advanced = (props: any): JSX.Element => {
                 width: props.dimensions.width + "px",
                 height: props.dimensions.heightTitle + "px",
                 position: "relative",
-                bgcolor: "section.main"
+                bgcolor: "section.background"
               }}
             >
               <Typography
@@ -123,12 +126,7 @@ export const Advanced = (props: any): JSX.Element => {
                     transform: "translate(0%, -50%)"
                   }}
                 >
-                  <Typography
-                    variant="body2"
-                    sx={{ textDecoration: "underline" }}
-                  >
-                    Help
-                  </Typography>
+                  <Typography variant="underline">Help</Typography>
                 </Button>
               )}
             </Box>
@@ -139,7 +137,7 @@ export const Advanced = (props: any): JSX.Element => {
                 boxSizing: "border-box",
                 padding: "24px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column"
               }}
@@ -157,8 +155,8 @@ export const Advanced = (props: any): JSX.Element => {
                     <Typography
                       sx={{ paddingLeft: "4px", color: "text.secondary" }}
                     >
-                      Baseline Frames: {baselineFrames}, Gram Data Frames:{" "}
-                      {gramDataFrames}
+                      Baseline Frames:&nbsp; {baselineFrames}, Gram Data
+                      Frames:&nbsp;{gramDataFrames}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -211,7 +209,7 @@ export const Advanced = (props: any): JSX.Element => {
                 width: props.dimensions.width + "px",
                 minHeight: props.dimensions.heightControls + "px",
                 position: "relative",
-                bgcolor: "section.main",
+                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -224,6 +222,7 @@ export const Advanced = (props: any): JSX.Element => {
                 }}
               >
                 <Button
+                  disabled={baselineFrames === null || gramDataFrames === null}
                   onClick={() => handleDoneButtonClick()}
                   sx={{ width: "150px" }}
                 >
