@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 
@@ -21,11 +19,15 @@ import {
   Page
 } from "./GearSelectionComponent";
 
+import { WIDTH } from "./constants";
+
+import { Canvas } from "./mui_extensions/Canvas";
+import { Content } from "./mui_extensions/Content";
+import { Controls } from "./mui_extensions/Controls";
+
 import { requestAPI } from "../handler";
 
 const SSE_CLOSED = 2;
-
-const showHelp = false;
 
 let intDurs: number[] = [];
 
@@ -344,129 +346,80 @@ export const Sweep = (props: any): JSX.Element => {
         <Alert
           severity="error"
           onClose={() => setAlert(false)}
-          sx={{ marginBottom: "16px", whiteSpace: "pre-wrap" }}
+          sx={{ whiteSpace: "pre-wrap" }}
         >
           {alertMessage}
         </Alert>
       ) : null}
       {initialized ? (
-        <>
-          <Stack spacing={2}>
-            <Box
+        <Canvas title="Carme Gear Selection" width={WIDTH}>
+          <Content
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
+            <Typography sx={{ fontSize: "1.1rem" }}>{sweep}</Typography>
+            <Typography
               sx={{
-                width: props.dimensions.width + "px",
-                height: props.dimensions.heightTitle + "px",
-                position: "relative",
-                bgcolor: "section.background"
+                marginTop: "8px",
+                fontSize: "1.1rem",
+                textDecoration: "underline"
               }}
             >
-              <Typography
-                variant="h5"
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)"
-                }}
-              >
-                Carme Gear Selection
-              </Typography>
-              {showHelp && (
-                <Button
-                  variant="text"
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "16px",
-                    transform: "translate(0%, -50%)"
-                  }}
-                >
-                  <Typography variant="underline">Help</Typography>
-                </Button>
-              )}
-            </Box>
-            <Box
-              sx={{
-                width: props.dimensions.width + "px",
-                height: props.dimensions.heightContent + "px",
-                boxSizing: "border-box",
-                padding: "24px",
-                position: "relative",
-                bgcolor: "section.background",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center"
+              Please set up noise condition "
+              <span style={{ fontWeight: "bold" }}>
+                {props.noiseConditions[step].name}
+              </span>
+              ". Click Go when done.
+            </Typography>
+            <Divider
+              orientation="horizontal"
+              sx={{ width: "100%", marginTop: "24px" }}
+            />
+            <Typography sx={{ marginTop: "24px" }}>Noise Conditions</Typography>
+            <div
+              id="webds_gear_selection_sweep_noise_conditions_list"
+              style={{
+                width: "75%",
+                marginTop: "16px",
+                paddingRight: listRightPdding,
+                overflow: "auto"
               }}
             >
-              <Typography sx={{ fontSize: "1.1rem" }}>{sweep}</Typography>
-              <Typography
-                sx={{
-                  marginTop: "8px",
-                  fontSize: "1.1rem",
-                  textDecoration: "underline"
-                }}
-              >
-                Please set up noise condition "
-                <span style={{ fontWeight: "bold" }}>
-                  {props.noiseConditions[step].name}
-                </span>
-                ". Click Go when done.
-              </Typography>
-              <Divider
-                orientation="horizontal"
-                sx={{ width: "100%", marginTop: "24px" }}
-              />
-              <Typography sx={{ marginTop: "24px" }}>
-                Noise Conditions
-              </Typography>
-              <div
-                id="webds_gear_selection_sweep_noise_conditions_list"
-                style={{
-                  width: "75%",
-                  marginTop: "16px",
-                  paddingRight: listRightPdding,
-                  overflow: "auto"
-                }}
-              >
-                <List>{generateListItems()}</List>
-              </div>
-            </Box>
-            <Box
+              <List>{generateListItems()}</List>
+            </div>
+          </Content>
+          <Controls
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <Button
+              disabled={prog !== 0 && goLabel !== "Next"}
+              onClick={() => handleGoButtonClick()}
+              sx={{ width: "150px" }}
+            >
+              {goLabel}
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => handleAbortButtonClick()}
               sx={{
-                width: props.dimensions.width + "px",
-                minHeight: props.dimensions.heightControls + "px",
-                boxSizing: "border-box",
-                padding: "24px",
-                position: "relative",
-                bgcolor: "section.background",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center"
+                position: "absolute",
+                top: "50%",
+                right: "24px",
+                transform: "translate(0%, -50%)"
               }}
             >
-              <Button
-                disabled={prog !== 0 && goLabel !== "Next"}
-                onClick={() => handleGoButtonClick()}
-                sx={{ width: "150px" }}
-              >
-                {goLabel}
-              </Button>
-              <Button
-                variant="text"
-                onClick={() => handleAbortButtonClick()}
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "24px",
-                  transform: "translate(0%, -50%)"
-                }}
-              >
-                <Typography variant="underline">Abort</Typography>
-              </Button>
-            </Box>
-          </Stack>
-        </>
+              <Typography variant="underline">Abort</Typography>
+            </Button>
+          </Controls>
+        </Canvas>
       ) : null}
     </>
   );

@@ -36,6 +36,12 @@ import {
   NoiseCondition
 } from "./GearSelectionComponent";
 
+import { WIDTH } from "./constants";
+
+import { Canvas } from "./mui_extensions/Canvas";
+import { Content } from "./mui_extensions/Content";
+import { Controls } from "./mui_extensions/Controls";
+
 import { requestAPI } from "../handler";
 
 const ISTRETCH = 9;
@@ -58,8 +64,6 @@ type SelectedGear = {
 };
 
 type SelectedGears = SelectedGear[];
-
-const showHelp = false;
 
 let sort = "freq";
 
@@ -554,55 +558,16 @@ export const Transcap = (props: any): JSX.Element => {
         <Alert
           severity="error"
           onClose={() => setAlert(false)}
-          sx={{ marginBottom: "16px", whiteSpace: "pre-wrap" }}
+          sx={{ whiteSpace: "pre-wrap" }}
         >
           {alertMessage}
         </Alert>
       ) : null}
       {initialized ? (
         <>
-          <Stack spacing={2}>
-            <Box
+          <Canvas title="Carme Gear Selection" width={WIDTH}>
+            <Content
               sx={{
-                width: props.dimensions.width + "px",
-                height: props.dimensions.heightTitle + "px",
-                position: "relative",
-                bgcolor: "section.background"
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)"
-                }}
-              >
-                Carme Gear Selection
-              </Typography>
-              {showHelp && (
-                <Button
-                  variant="text"
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "16px",
-                    transform: "translate(0%, -50%)"
-                  }}
-                >
-                  <Typography variant="underline">Help</Typography>
-                </Button>
-              )}
-            </Box>
-            <Box
-              sx={{
-                width: props.dimensions.width + "px",
-                minHeight: props.dimensions.heightContent + "px",
-                boxSizing: "border-box",
-                padding: "24px",
-                position: "relative",
-                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center"
@@ -688,15 +653,9 @@ export const Transcap = (props: any): JSX.Element => {
                   </Table>
                 </div>
               </TableContainer>
-            </Box>
-            <Box
+            </Content>
+            <Controls
               sx={{
-                width: props.dimensions.width + "px",
-                minHeight: props.dimensions.heightControls + "px",
-                boxSizing: "border-box",
-                padding: "24px",
-                position: "relative",
-                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "top",
@@ -785,8 +744,8 @@ export const Transcap = (props: any): JSX.Element => {
                   Commit
                 </Button>
               </Stack>
-            </Box>
-          </Stack>
+            </Controls>
+          </Canvas>
           <Dialog open={openDialog} onClose={handleDialogClose}>
             <DialogTitle sx={{ textAlign: "center" }}>
               {dialogTitle}

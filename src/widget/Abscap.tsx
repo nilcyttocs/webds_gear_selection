@@ -25,7 +25,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 
 import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
 
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
@@ -39,6 +38,12 @@ import {
   NoiseDataEntry,
   NoiseCondition
 } from "./GearSelectionComponent";
+
+import { WIDTH } from "./constants";
+
+import { Canvas } from "./mui_extensions/Canvas";
+import { Content } from "./mui_extensions/Content";
+import { Controls } from "./mui_extensions/Controls";
 
 import { requestAPI } from "../handler";
 
@@ -66,8 +71,6 @@ type SelectedGear = {
 };
 
 type SelectedGears = SelectedGear[];
-
-const showHelp = false;
 
 let sort = "freq";
 
@@ -803,55 +806,16 @@ export const Abscap = (props: any): JSX.Element => {
         <Alert
           severity="error"
           onClose={() => setAlert(false)}
-          sx={{ marginBottom: "16px", whiteSpace: "pre-wrap" }}
+          sx={{ whiteSpace: "pre-wrap" }}
         >
           {alertMessage}
         </Alert>
       ) : null}
       {initialized ? (
         <>
-          <Stack spacing={2}>
-            <Box
+          <Canvas title="Carme Gear Selection" width={WIDTH}>
+            <Content
               sx={{
-                width: props.dimensions.width + "px",
-                height: props.dimensions.heightTitle + "px",
-                position: "relative",
-                bgcolor: "section.background"
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)"
-                }}
-              >
-                Carme Gear Selection
-              </Typography>
-              {showHelp && (
-                <Button
-                  variant="text"
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "16px",
-                    transform: "translate(0%, -50%)"
-                  }}
-                >
-                  <Typography variant="underline">Help</Typography>
-                </Button>
-              )}
-            </Box>
-            <Box
-              sx={{
-                width: props.dimensions.width + "px",
-                minHeight: props.dimensions.heightContent + "px",
-                boxSizing: "border-box",
-                padding: "24px",
-                position: "relative",
-                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center"
@@ -937,15 +901,9 @@ export const Abscap = (props: any): JSX.Element => {
                   </Table>
                 </div>
               </TableContainer>
-            </Box>
-            <Box
+            </Content>
+            <Controls
               sx={{
-                width: props.dimensions.width + "px",
-                minHeight: props.dimensions.heightControls + "px",
-                boxSizing: "border-box",
-                padding: "24px",
-                position: "relative",
-                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "top",
@@ -1003,27 +961,38 @@ export const Abscap = (props: any): JSX.Element => {
                   label="&nbsp;Highlight Frequencies with Display Noise"
                 />
                 {showT2D ? (
-                  <Stack spacing={2} direction="row" sx={{ marginTop: "8px" }}>
-                    <Typography sx={{ paddingLeft: "4px" }}>
-                      HSync Frequency:
+                  <div>
+                    <Typography
+                      variant="body2"
+                      sx={{ paddingLeft: "4px", display: "inline-block" }}
+                    >
+                      HSync Frequency:&nbsp;
                     </Typography>
                     <TextField
-                      size="small"
-                      value={hSync}
                       variant="standard"
+                      value={hSync}
+                      inputProps={{ style: { textAlign: "center" } }}
                       onChange={(event) =>
                         handleHSyncInputChange(event.target.value)
                       }
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Typography>(kHz)</Typography>
-                          </InputAdornment>
-                        )
+                      sx={{
+                        width: "100px",
+                        display: "inline-block",
+                        "& .MuiInput-root": {
+                          fontSize: "0.875rem"
+                        },
+                        "& .MuiInput-input": {
+                          padding: 0
+                        }
                       }}
-                      sx={{ width: "150px" }}
                     />
-                  </Stack>
+                    <Typography
+                      variant="body2"
+                      sx={{ display: "inline-block" }}
+                    >
+                      &nbsp;kHz
+                    </Typography>
+                  </div>
                 ) : null}
               </Stack>
               <Stack spacing={2} direction="row">
@@ -1072,8 +1041,8 @@ export const Abscap = (props: any): JSX.Element => {
                   Commit
                 </Button>
               </Stack>
-            </Box>
-          </Stack>
+            </Controls>
+          </Canvas>
           <Dialog open={openDialog} onClose={handleDialogClose}>
             <DialogTitle sx={{ textAlign: "center" }}>
               {dialogTitle}

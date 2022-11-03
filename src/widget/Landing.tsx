@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
-import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -28,7 +27,11 @@ import Typography from "@mui/material/Typography";
 
 import { NoiseCondition, Page } from "./GearSelectionComponent";
 
-const showHelp = false;
+import { WIDTH } from "./constants";
+
+import { Canvas } from "./mui_extensions/Canvas";
+import { Content } from "./mui_extensions/Content";
+import { Controls } from "./mui_extensions/Controls";
 
 export const Landing = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
@@ -194,48 +197,9 @@ export const Landing = (props: any): JSX.Element => {
     <>
       {initialized ? (
         <>
-          <Stack spacing={2}>
-            <Box
+          <Canvas title="Carme Gear Selection" width={WIDTH}>
+            <Content
               sx={{
-                width: props.dimensions.width + "px",
-                height: props.dimensions.heightTitle + "px",
-                position: "relative",
-                bgcolor: "section.background"
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)"
-                }}
-              >
-                Carme Gear Selection
-              </Typography>
-              {showHelp && (
-                <Button
-                  variant="text"
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "16px",
-                    transform: "translate(0%, -50%)"
-                  }}
-                >
-                  <Typography variant="underline">Help</Typography>
-                </Button>
-              )}
-            </Box>
-            <Box
-              sx={{
-                width: props.dimensions.width + "px",
-                height: props.dimensions.heightContent + "px",
-                boxSizing: "border-box",
-                padding: "24px",
-                position: "relative",
-                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center"
@@ -309,15 +273,9 @@ export const Landing = (props: any): JSX.Element => {
                   </IconButton>
                 </Stack>
               </div>
-            </Box>
-            <Box
+            </Content>
+            <Controls
               sx={{
-                width: props.dimensions.width + "px",
-                minHeight: props.dimensions.heightControls + "px",
-                boxSizing: "border-box",
-                padding: "24px",
-                position: "relative",
-                bgcolor: "section.background",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -347,8 +305,8 @@ export const Landing = (props: any): JSX.Element => {
               >
                 <Typography variant="underline">Advanced Settings</Typography>
               </Button>
-            </Box>
-          </Stack>
+            </Controls>
+          </Canvas>
           <Dialog
             fullWidth
             maxWidth="xs"

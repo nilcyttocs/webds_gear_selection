@@ -48,23 +48,11 @@ export type NoiseDataSet = {
 
 export type NoiseData = NoiseDataSet[];
 
-const WIDTH = 1000;
-const HEIGHT_TITLE = 70;
-const HEIGHT_CONTENT = 450;
-const HEIGHT_CONTROLS = 120;
-
 const DEFAULT_INT_DUR_MIN = 24;
 const DEFAULT_INT_DUR_STEPS = 75;
 
 const DEFAULT_BASELINE_FRAMES = 16;
 const DEFAULT_GRAM_DATA_FRAMES = 400;
-
-const dimensions = {
-  width: WIDTH,
-  heightTitle: HEIGHT_TITLE,
-  heightContent: HEIGHT_CONTENT,
-  heightControls: HEIGHT_CONTROLS
-};
 
 let alertMessage = "";
 
@@ -102,7 +90,6 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Landing:
         return (
           <Landing
-            dimensions={dimensions}
             changePage={changePage}
             intDurMin={intDurMin}
             setIntDurMin={setIntDurMin}
@@ -115,7 +102,6 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Advanced:
         return (
           <Advanced
-            dimensions={dimensions}
             changePage={changePage}
             baselineFrames={baselineFrames}
             setBaselineFrames={setBaselineFrames}
@@ -126,7 +112,6 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Sweep:
         return (
           <Sweep
-            dimensions={dimensions}
             changePage={changePage}
             numGears={numGears}
             intDurMin={intDurMin}
@@ -140,7 +125,6 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Transcap:
         return (
           <Transcap
-            dimensions={dimensions}
             changePage={changePage}
             numGears={numGears}
             noiseData={noiseData}
@@ -149,7 +133,6 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Abscap:
         return (
           <Abscap
-            dimensions={dimensions}
             changePage={changePage}
             numGears={numGears}
             noiseData={noiseData}
