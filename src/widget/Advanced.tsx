@@ -8,11 +8,12 @@ import MuiAccordion, { AccordionProps } from "@mui/material/Accordion";
 import MuiAccordionSummary, {
   AccordionSummaryProps
 } from "@mui/material/AccordionSummary";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
+
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import { styled } from "@mui/material/styles";
 
@@ -38,7 +39,7 @@ const Accordion = styled((props: AccordionProps) => (
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
   <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+    expandIcon={<KeyboardArrowDownIcon sx={{ fontSize: "0.9rem" }} />}
     {...props}
   />
 ))(({ theme }) => ({
@@ -110,7 +111,7 @@ export const Advanced = (props: any): JSX.Element => {
             </div>
             <div style={{ marginTop: "24px", overflow: "auto" }}>
               <Accordion>
-                <AccordionSummary expandIcon={<ExpandMore />}>
+                <AccordionSummary expandIcon={<KeyboardArrowRightIcon />}>
                   <Typography sx={{ width: "25%", flexShrink: 0 }}>
                     Covariance Params
                   </Typography>
