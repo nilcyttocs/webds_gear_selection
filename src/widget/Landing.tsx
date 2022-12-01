@@ -197,7 +197,7 @@ export const Landing = (props: any): JSX.Element => {
     <>
       {initialized ? (
         <>
-          <Canvas title="Carme Gear Selection" width={WIDTH} stretch>
+          <Canvas title="Carme Gear Selection" width={WIDTH}>
             <Content
               sx={{
                 display: "flex",
