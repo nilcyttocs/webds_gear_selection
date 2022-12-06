@@ -19,7 +19,14 @@ import {
   Page
 } from "./GearSelectionComponent";
 
-import { WIDTH } from "./constants";
+import {
+  ALERT_MESSAGE_PRE_PDNR_SWEEP,
+  ALERT_MESSAGE_PDNR_SWEEP,
+  ALERT_MESSAGE_ABORT_PRE_PDNR_SWEEP,
+  ALERT_MESSAGE_ABORT_PDNR_SWEEP,
+  ALERT_MESSAGE_CLEAR_PDNR_TUNING,
+  WIDTH
+} from "./constants";
 
 import { Canvas } from "./mui_extensions/Canvas";
 import { Content } from "./mui_extensions/Content";
@@ -36,18 +43,6 @@ let noiseData: NoiseData = [];
 let eventSource: EventSource | undefined = undefined;
 
 let alertMessage = "";
-
-const alertMessagePrePDNRSweep =
-  "Failed to do Pre-PDNR sweep. Please ensure device and running firmware support Carme gear selection.";
-
-const alertMessagePDNRSweep =
-  "Failed to do PDNR sweep. Please ensure device and running firmware support Carme gear selection.";
-
-const alertMessageAbortPrePDNRSweep = "Failed to abort Pre-PDNR sweep.";
-
-const alertMessageAbortPDNRSweep = "Failed to abort PDNR sweep.";
-
-const alertMessageClearPDNRTuning = "Failed to clear PDNR tuning.";
 
 const sendAbortRequest = async (): Promise<void> => {
   const dataToSend = {
@@ -118,6 +113,11 @@ export const Sweep = (props: any): JSX.Element => {
   const [goLabel, setGoLabel] = useState<string>("Go");
   const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
   const [listRightPdding, setListRightPadding] = useState(0);
+
+  const showAlert = (message: string) => {
+    alertMessage = message;
+    setAlert(true);
+  };
 
   const collectNoiseData = (data: number[][]) => {
     noiseData.forEach((item, index: number) => {
@@ -201,8 +201,7 @@ export const Sweep = (props: any): JSX.Element => {
         sendClearPDNRTuningRequest();
       } catch (error) {
         console.error(error);
-        alertMessage = alertMessageClearPDNRTuning;
-        setAlert(true);
+        showAlert(ALERT_MESSAGE_CLEAR_PDNR_TUNING);
         return;
       }
     }
@@ -233,11 +232,10 @@ export const Sweep = (props: any): JSX.Element => {
     } catch (error) {
       console.error(error);
       if (sweep === "Pre-PDNR Sweep") {
-        alertMessage = alertMessagePrePDNRSweep;
+        showAlert(ALERT_MESSAGE_PRE_PDNR_SWEEP);
       } else {
-        alertMessage = alertMessagePDNRSweep;
+        showAlert(ALERT_MESSAGE_PDNR_SWEEP);
       }
-      setAlert(true);
       return;
     }
     setProg(0.001);
@@ -258,9 +256,9 @@ export const Sweep = (props: any): JSX.Element => {
     } catch (error) {
       console.error(error);
       if (sweep === "Pre-PDNR Sweep") {
-        alertMessage = alertMessageAbortPrePDNRSweep;
+        showAlert(ALERT_MESSAGE_ABORT_PRE_PDNR_SWEEP);
       } else {
-        alertMessage = alertMessageAbortPDNRSweep;
+        showAlert(ALERT_MESSAGE_ABORT_PDNR_SWEEP);
       }
     }
   };

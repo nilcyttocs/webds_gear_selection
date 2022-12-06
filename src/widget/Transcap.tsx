@@ -36,7 +36,13 @@ import {
   NoiseCondition
 } from "./GearSelectionComponent";
 
-import { WIDTH } from "./constants";
+import {
+  ALERT_MESSAGE_WRITE_TO_RAM,
+  ALERT_MESSAGE_WRITE_TO_FLASH,
+  TEST_DIALOG_TITLE,
+  COMMIT_DIALOG_TITLE,
+  WIDTH
+} from "./constants";
 
 import { Canvas } from "./mui_extensions/Canvas";
 import { Content } from "./mui_extensions/Content";
@@ -79,17 +85,9 @@ let conditions: NoiseCondition[] = [];
 
 let selectedGears: SelectedGears = [];
 
-let dialogTitle = "";
-
-const testDialogTitle = "Gear Settings to Write to RAM";
-
-const commitDialogTitle = "Gear Settings to Write to Flash";
-
 let alertMessage = "";
 
-const alertMessageWriteToFlash = "Failed to write gear settings to flash.";
-
-const alertMessageWriteToRAM = "Failed to write gear settings to RAM.";
+let dialogTitle = "";
 
 const sendSetTransGearsRequest = async (
   selections: number[],
@@ -271,6 +269,11 @@ export const Transcap = (props: any): JSX.Element => {
   const theme = useTheme();
   const dark = theme.palette.mode === "dark" ? "-dark" : "";
 
+  const showAlert = (message: string) => {
+    alertMessage = message;
+    setAlert(true);
+  };
+
   const handleSortCheckboxClick = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -307,14 +310,14 @@ export const Transcap = (props: any): JSX.Element => {
 
   const handleTestButtonClick = () => {
     testCommit = "test";
-    dialogTitle = testDialogTitle;
+    dialogTitle = TEST_DIALOG_TITLE;
     updateSelectedGears(selected, props.numGears);
     setOpenDialog(true);
   };
 
   const handleCommitButtonClick = () => {
     testCommit = "commit";
-    dialogTitle = commitDialogTitle;
+    dialogTitle = COMMIT_DIALOG_TITLE;
     updateSelectedGears(selected, props.numGears);
     setOpenDialog(true);
   };
@@ -339,11 +342,10 @@ export const Transcap = (props: any): JSX.Element => {
     } catch (error) {
       console.error(error);
       if (testCommit === "commit") {
-        alertMessage = alertMessageWriteToFlash;
+        showAlert(ALERT_MESSAGE_WRITE_TO_FLASH);
       } else {
-        alertMessage = alertMessageWriteToRAM;
+        showAlert(ALERT_MESSAGE_WRITE_TO_RAM);
       }
-      setAlert(true);
     }
     handleDialogClose();
   };

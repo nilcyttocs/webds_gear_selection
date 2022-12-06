@@ -16,6 +16,16 @@ import Sweep from "./Sweep";
 
 import Transcap from "./Transcap";
 
+import {
+  ALERT_MESSAGE_READ_STATIC,
+  ALERT_MESSAGE_ADD_PUBLIC_CONFIG_JSON,
+  ALERT_MESSAGE_ADD_PRIVATE_CONFIG_JSON,
+  DEFAULT_INT_DUR_MIN,
+  DEFAULT_INT_DUR_STEPS,
+  DEFAULT_BASELINE_FRAMES,
+  DEFAULT_GRAM_DATA_FRAMES
+} from "./constants";
+
 import { requestAPI } from "../handler";
 
 export enum Page {
@@ -48,22 +58,7 @@ export type NoiseDataSet = {
 
 export type NoiseData = NoiseDataSet[];
 
-const DEFAULT_INT_DUR_MIN = 24;
-const DEFAULT_INT_DUR_STEPS = 75;
-
-const DEFAULT_BASELINE_FRAMES = 16;
-const DEFAULT_GRAM_DATA_FRAMES = 400;
-
 let alertMessage = "";
-
-const alertMessagePublicConfigJSON =
-  "Failed to retrieve config JSON file. Please check in file browser in left sidebar and ensure availability of config JSON file in /Packrat/ directory (e.g. /Packrat/1234567/config.json for PR1234567).";
-
-const alertMessagePrivateConfigJSON =
-  "Failed to retrieve config JSON file. Please check in file browser in left sidebar and ensure availability of config JSON file in /Packrat/ directory (e.g. /Packrat/1234567/config_private.json for PR1234567).";
-
-const alertMessageStaticConfig =
-  "Failed to read static config and obtain gear information from device. Please ensure device and running firmware support Carme gear selection.";
 
 export const GearSelectionComponent = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
@@ -80,6 +75,11 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
   );
   const [noiseData, setNoiseData] = useState<NoiseData>([]);
   const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
+
+  const showAlert = (message: string) => {
+    alertMessage = message;
+    setAlert(true);
+  };
 
   const changePage = (newPage: Page) => {
     setPage(newPage);
@@ -154,11 +154,10 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
     } catch (error) {
       console.error(error);
       if (external) {
-        alertMessage = alertMessagePublicConfigJSON;
+        showAlert(ALERT_MESSAGE_ADD_PUBLIC_CONFIG_JSON);
       } else {
-        alertMessage = alertMessagePrivateConfigJSON;
+        showAlert(ALERT_MESSAGE_ADD_PRIVATE_CONFIG_JSON);
       }
-      setAlert(true);
       return;
     }
     const dataToSend: any = {
@@ -172,8 +171,7 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       setNumGears(staticConfig["daqParams.freqTable[0].rstretchDur"].length);
     } catch (error) {
       console.error(`Error - POST /webds/command\n${dataToSend}\n${error}`);
-      alertMessage = alertMessageStaticConfig;
-      setAlert(true);
+      showAlert(ALERT_MESSAGE_READ_STATIC);
       return;
     }
     setInitialized(true);
