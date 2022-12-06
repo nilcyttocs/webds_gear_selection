@@ -30,7 +30,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
   id: "@webds/gear_selection:plugin",
   autoStart: true,
   requires: [ILauncher, ILayoutRestorer, WebDSService],
-  activate: async (
+  activate: (
     app: JupyterFrontEnd,
     launcher: ILauncher,
     restorer: ILayoutRestorer,
