@@ -16,7 +16,7 @@ import Sweep from "./Sweep";
 
 import Transcap from "./Transcap";
 
-import { webdsService } from "./local_exports";
+import { requestAPI, webdsService } from "./local_exports";
 
 import {
   ALERT_MESSAGE_READ_STATIC,
@@ -27,8 +27,6 @@ import {
   DEFAULT_BASELINE_FRAMES,
   DEFAULT_GRAM_DATA_FRAMES
 } from "./constants";
-
-import { requestAPI } from "../handler";
 
 export enum Page {
   Landing = "LANDING",

@@ -51,7 +51,7 @@ import { Canvas } from "./mui_extensions/Canvas";
 import { Content } from "./mui_extensions/Content";
 import { Controls } from "./mui_extensions/Controls";
 
-import { requestAPI } from "../handler";
+import { requestAPI } from "./local_exports";
 
 const ISTRETCH = 9;
 const RESET = 14;
