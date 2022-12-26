@@ -16,6 +16,8 @@ import Sweep from "./Sweep";
 
 import Transcap from "./Transcap";
 
+import { webdsService } from "./local_exports";
+
 import {
   ALERT_MESSAGE_READ_STATIC,
   ALERT_MESSAGE_ADD_PUBLIC_CONFIG_JSON,
@@ -75,6 +77,8 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
   );
   const [noiseData, setNoiseData] = useState<NoiseData>([]);
   const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
+
+  const webdsTheme = webdsService.ui.getWebDSTheme();
 
   const showAlert = (message: string) => {
     alertMessage = message;
@@ -144,12 +148,12 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
   };
 
   const initialize = async () => {
-    const external = props.service.pinormos.isExternal();
+    const external = webdsService.pinormos.isExternal();
     try {
       if (external) {
-        await props.service.packrat.cache.addPublicConfig();
+        await webdsService.packrat.cache.addPublicConfig();
       } else {
-        await props.service.packrat.cache.addPrivateConfig();
+        await webdsService.packrat.cache.addPrivateConfig();
       }
     } catch (error) {
       console.error(error);
@@ -180,8 +184,6 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
   useEffect(() => {
     initialize();
   }, []);
-
-  const webdsTheme = props.service.ui.getWebDSTheme();
 
   return (
     <>

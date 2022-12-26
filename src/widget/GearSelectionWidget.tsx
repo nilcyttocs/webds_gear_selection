@@ -6,6 +6,8 @@ import { WebDSService } from "@webds/service";
 
 import GearSelectionComponent from "./GearSelectionComponent";
 
+export let webdsService: WebDSService;
+
 export class GearSelectionWidget extends ReactWidget {
   id: string;
   service: WebDSService;
@@ -17,9 +19,10 @@ export class GearSelectionWidget extends ReactWidget {
   }
 
   render(): JSX.Element {
+    webdsService = this.service;
     return (
       <div id={this.id + "_component"}>
-        <GearSelectionComponent service={this.service} />
+        <GearSelectionComponent />
       </div>
     );
   }
