@@ -1,37 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Divider from '@mui/material/Divider';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
-import FormControl from "@mui/material/FormControl";
-import OutlinedInput from "@mui/material/OutlinedInput";
-
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemButton from "@mui/material/ListItemButton";
-
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import TextField from "@mui/material/TextField";
-
-import Typography from "@mui/material/Typography";
-
-import { NoiseCondition, Page } from "./GearSelectionComponent";
-
-import { WIDTH } from "./constants";
-
-import { Canvas } from "./mui_extensions/Canvas";
-import { Content } from "./mui_extensions/Content";
-import { Controls } from "./mui_extensions/Controls";
+import { WIDTH } from './constants';
+import { NoiseCondition, Page } from './GearSelectionComponent';
+import { Canvas } from './mui_extensions/Canvas';
+import { Content } from './mui_extensions/Content';
+import { Controls } from './mui_extensions/Controls';
 
 export const Landing = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
@@ -43,12 +36,12 @@ export const Landing = (props: any): JSX.Element => {
   const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
   const [noiseConditionEntry, setNoiseConditionEntry] = useState<any>({
     id: null,
-    name: "Noise Condition"
+    name: 'Noise Condition'
   });
   const [listRightPdding, setListRightPadding] = useState(0);
 
   const handleAddButtonClick = () => {
-    setNoiseConditionEntry({ id: null, name: "Noise Condition" });
+    setNoiseConditionEntry({ id: null, name: 'Noise Condition' });
     setOpenDialog(true);
   };
 
@@ -126,20 +119,20 @@ export const Landing = (props: any): JSX.Element => {
   };
 
   const handleIntDurInputChange = (id: string, value: string) => {
-    if (value !== "" && isNaN(Number(value))) {
+    if (value !== '' && isNaN(Number(value))) {
       return;
     }
-    if (value === "") {
-      if (id === "intDurMin") {
+    if (value === '') {
+      if (id === 'intDurMin') {
         setIntDurMin(null);
-      } else if (id === "intDurSteps") setIntDurSteps(null);
+      } else if (id === 'intDurSteps') setIntDurSteps(null);
       return;
     }
     const num = parseInt(value, 10);
     if (num < 4096) {
-      if (id === "intDurMin") {
+      if (id === 'intDurMin') {
         setIntDurMin(num);
-      } else if (id === "intDurSteps") setIntDurSteps(num);
+      } else if (id === 'intDurSteps') setIntDurSteps(num);
     }
   };
 
@@ -161,7 +154,7 @@ export const Landing = (props: any): JSX.Element => {
         >
           <ListItemButton
             onClick={() => handleListItemClick(id, name)}
-            sx={{ marginRight: "16px", padding: "0px 16px" }}
+            sx={{ marginRight: '16px', padding: '0px 16px' }}
           >
             <ListItemText primary={name} />
           </ListItemButton>
@@ -171,7 +164,7 @@ export const Landing = (props: any): JSX.Element => {
   };
 
   useEffect(() => {
-    const button = document.getElementById("addNoiseConditionButton");
+    const button = document.getElementById('addNoiseConditionButton');
     if (button && openDialog === false) {
       button.blur();
     }
@@ -179,7 +172,7 @@ export const Landing = (props: any): JSX.Element => {
 
   useEffect(() => {
     const element = document.getElementById(
-      "webds_gear_selection_landing_noise_conditions_list"
+      'webds_gear_selection_landing_noise_conditions_list'
     );
     if (element && element.scrollHeight > element.clientHeight) {
       setListRightPadding(8);
@@ -200,9 +193,9 @@ export const Landing = (props: any): JSX.Element => {
           <Canvas title="Carme Gear Selection" width={WIDTH}>
             <Content
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center"
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
               }}
             >
               <Stack justifyContent="center" spacing={10} direction="row">
@@ -211,12 +204,12 @@ export const Landing = (props: any): JSX.Element => {
                   <FormControl
                     variant="outlined"
                     size="small"
-                    sx={{ width: "150px" }}
+                    sx={{ width: '150px' }}
                   >
                     <OutlinedInput
                       id="intDurMin"
                       value={intDurMin}
-                      onChange={(event) =>
+                      onChange={event =>
                         handleIntDurInputChange(
                           event.target.id,
                           event.target.value
@@ -230,12 +223,12 @@ export const Landing = (props: any): JSX.Element => {
                   <FormControl
                     variant="outlined"
                     size="small"
-                    sx={{ width: "150px" }}
+                    sx={{ width: '150px' }}
                   >
                     <OutlinedInput
                       id="intDurSteps"
                       value={intDurSteps}
-                      onChange={(event) =>
+                      onChange={event =>
                         handleIntDurInputChange(
                           event.target.id,
                           event.target.value
@@ -247,18 +240,18 @@ export const Landing = (props: any): JSX.Element => {
               </Stack>
               <Divider
                 orientation="horizontal"
-                sx={{ width: "100%", marginTop: "24px" }}
+                sx={{ width: '100%', marginTop: '24px' }}
               />
-              <Typography sx={{ marginTop: "24px" }}>
+              <Typography sx={{ marginTop: '24px' }}>
                 Noise Conditions
               </Typography>
               <div
                 id="webds_gear_selection_landing_noise_conditions_list"
                 style={{
-                  width: "75%",
-                  marginTop: "16px",
+                  width: '75%',
+                  marginTop: '16px',
                   paddingRight: listRightPdding,
-                  overflow: "auto"
+                  overflow: 'auto'
                 }}
               >
                 <List>{generateListItems()}</List>
@@ -267,7 +260,7 @@ export const Landing = (props: any): JSX.Element => {
                     id="addNoiseConditionButton"
                     color="primary"
                     onClick={() => handleAddButtonClick()}
-                    sx={{ marginTop: "8px" }}
+                    sx={{ marginTop: '8px' }}
                   >
                     <AddBoxIcon />
                   </IconButton>
@@ -276,10 +269,10 @@ export const Landing = (props: any): JSX.Element => {
             </Content>
             <Controls
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center"
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
               <Button
@@ -289,7 +282,7 @@ export const Landing = (props: any): JSX.Element => {
                   noiseConditions.length === 0
                 }
                 onClick={() => handleChangePageButtonClick(Page.Sweep)}
-                sx={{ width: "150px" }}
+                sx={{ width: '150px' }}
               >
                 Start
               </Button>
@@ -297,10 +290,10 @@ export const Landing = (props: any): JSX.Element => {
                 variant="text"
                 onClick={() => handleChangePageButtonClick(Page.Advanced)}
                 sx={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "24px",
-                  transform: "translate(0%, -50%)"
+                  position: 'absolute',
+                  top: '50%',
+                  right: '24px',
+                  transform: 'translate(0%, -50%)'
                 }}
               >
                 <Typography variant="underline">Advanced Settings</Typography>
@@ -330,13 +323,13 @@ export const Landing = (props: any): JSX.Element => {
             <DialogActions>
               <Button
                 onClick={() => handleDialogCancelButtonClick()}
-                sx={{ width: "100px" }}
+                sx={{ width: '100px' }}
               >
                 Cancel
               </Button>
               <Button
                 onClick={() => handleDialogDoneButtonClick()}
-                sx={{ width: "100px" }}
+                sx={{ width: '100px' }}
               >
                 Done
               </Button>

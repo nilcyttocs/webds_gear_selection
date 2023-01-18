@@ -1,57 +1,47 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
-
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
-import ToggleButton from "@mui/material/ToggleButton";
-
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-
-import TextField from "@mui/material/TextField";
-
-import Alert from "@mui/material/Alert";
-import Typography from "@mui/material/Typography";
-
-import { styled, useTheme } from "@mui/material/styles";
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Stack from '@mui/material/Stack';
+import { styled, useTheme } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
+import ToggleButton from '@mui/material/ToggleButton';
+import Typography from '@mui/material/Typography';
 
 import {
-  Page,
-  NoiseData,
-  NoiseDataSet,
-  NoiseDataEntry,
-  NoiseCondition
-} from "./GearSelectionComponent";
-
-import {
-  ALERT_MESSAGE_WRITE_TO_RAM,
   ALERT_MESSAGE_WRITE_TO_FLASH,
-  TEST_DIALOG_TITLE,
+  ALERT_MESSAGE_WRITE_TO_RAM,
   COMMIT_DIALOG_TITLE,
+  TEST_DIALOG_TITLE,
   WIDTH
-} from "./constants";
-
-import { Canvas } from "./mui_extensions/Canvas";
-import { Content } from "./mui_extensions/Content";
-import { Controls } from "./mui_extensions/Controls";
-
-import { requestAPI } from "./local_exports";
+} from './constants';
+import {
+  NoiseCondition,
+  NoiseData,
+  NoiseDataEntry,
+  NoiseDataSet,
+  Page
+} from './GearSelectionComponent';
+import { requestAPI } from './local_exports';
+import { Canvas } from './mui_extensions/Canvas';
+import { Content } from './mui_extensions/Content';
+import { Controls } from './mui_extensions/Controls';
 
 const ISTRETCH = 9;
 const RESET = 14;
@@ -78,9 +68,9 @@ type SelectedGear = {
 
 type SelectedGears = SelectedGear[];
 
-let sort = "freq";
+let sort = 'freq';
 
-let testCommit = "test";
+let testCommit = 'test';
 
 let noiseData: NoiseData = [];
 
@@ -96,13 +86,13 @@ let t2dNoise: boolean = false;
 
 let selectedGears: SelectedGears = [];
 
-let alertMessage = "";
+let alertMessage = '';
 
-let dialogTitle = "";
+let dialogTitle = '';
 
 const CustomFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
-  "& .MuiTypography-root": {
-    fontSize: "0.875rem"
+  '& .MuiTypography-root': {
+    fontSize: '0.875rem'
   }
 }));
 
@@ -112,20 +102,20 @@ const sendSetAbsGearsRequest = async (
   commit: boolean
 ): Promise<void> => {
   const dataToSend = {
-    function: "set_abs_gears",
+    function: 'set_abs_gears',
     arguments: [selections, numGears, commit]
   };
   try {
-    await requestAPI<any>("gear-selection", {
+    await requestAPI<any>('gear-selection', {
       body: JSON.stringify(dataToSend),
-      method: "POST"
+      method: 'POST'
     });
     return Promise.resolve();
   } catch (error) {
     console.error(
       `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
     );
-    return Promise.reject("Failed to set abscap gears");
+    return Promise.reject('Failed to set abscap gears');
   }
 };
 
@@ -144,14 +134,14 @@ const updateSelectedGears = (
       rstretch: undefined
     });
   }
-  const selections = intDurs.filter((item) => selected[item.intDur]);
+  const selections = intDurs.filter(item => selected[item.intDur]);
   if (selections.length) {
     selectedGears[0].intDur = selections[0].intDur;
     for (let idx = 0; idx < selections.length; idx++) {
       let intDur = selections[idx].intDur;
       if (
         showT2D &&
-        noiseData.find((item) => {
+        noiseData.find(item => {
           return item.intDur === intDur && item.displayNoise;
         })
       ) {
@@ -165,7 +155,7 @@ const updateSelectedGears = (
 };
 
 const findMaxNoise = (column: Column): number | undefined => {
-  const dataSet = noiseData.find((item) => item.intDur === column.intDur);
+  const dataSet = noiseData.find(item => item.intDur === column.intDur);
   if (dataSet) {
     const maxDataEntry = dataSet.data.reduce(
       (prev, cur) => {
@@ -188,7 +178,7 @@ const findMaxNoiseNonExcluded = (
   column: Column,
   exclusions: Excluded
 ): number | undefined => {
-  const dataSet = noiseData.find((item) => item.intDur === column.intDur);
+  const dataSet = noiseData.find(item => item.intDur === column.intDur);
   if (dataSet) {
     const maxDataEntry = dataSet.data.reduce(
       (prev, cur) => {
@@ -214,7 +204,7 @@ const findTotalNoiseNonExcluded = (
   column: Column,
   exclusions: Excluded
 ): number | undefined => {
-  const dataSet = noiseData.find((item) => item.intDur === column.intDur);
+  const dataSet = noiseData.find(item => item.intDur === column.intDur);
   if (dataSet) {
     const totalNoise = dataSet.data.reduce(
       (prev, cur) => {
@@ -233,10 +223,10 @@ const findTotalNoiseNonExcluded = (
 
 const findMinGearNoise = (condition: NoiseCondition): number | undefined => {
   const gearNoise: number[] = [];
-  noiseData.forEach((item) => {
+  noiseData.forEach(item => {
     if (item.selected) {
       const dataEntry = item.data.find(
-        (item) => item.condition.id === condition.id
+        item => item.condition.id === condition.id
       );
       if (dataEntry) {
         gearNoise.push(dataEntry.max);
@@ -249,7 +239,7 @@ const findMinGearNoise = (condition: NoiseCondition): number | undefined => {
 };
 
 const sortByFrequency = (): Columns => {
-  return noiseData.map((item) => {
+  return noiseData.map(item => {
     return {
       intDur: item.intDur,
       displayNoise: item.displayNoise
@@ -260,7 +250,7 @@ const sortByFrequency = (): Columns => {
 const sortByTotalNoise = (exclusions: Excluded): Columns => {
   const selectedGroup: Columns = [];
   const nonSelectedGroup: Columns = [];
-  noiseData.forEach((item) => {
+  noiseData.forEach(item => {
     if (item.selected) {
       selectedGroup.push({
         intDur: item.intDur,
@@ -277,7 +267,7 @@ const sortByTotalNoise = (exclusions: Excluded): Columns => {
       return 0;
     }
   });
-  noiseData.forEach((item) => {
+  noiseData.forEach(item => {
     if (!item.selected) {
       nonSelectedGroup.push({
         intDur: item.intDur,
@@ -302,14 +292,14 @@ export const Abscap = (props: any): JSX.Element => {
   const [alert, setAlert] = useState<boolean>(false);
   const [showXY, setShowXY] = useState<boolean>(true);
   const [showT2D, setShowT2D] = useState<boolean>(false);
-  const [hSync, setHSync] = useState<string>("");
+  const [hSync, setHSync] = useState<string>('');
   const [openDialog, setOpenDialog] = useState(false);
   const [columns, setColumns] = useState<Columns>([]);
   const [selected, setSelected] = useState<Selected>({});
   const [excluded, setExcluded] = useState<Excluded>({});
 
   const theme = useTheme();
-  const dark = theme.palette.mode === "dark" ? "-dark" : "";
+  const dark = theme.palette.mode === 'dark' ? '-dark' : '';
 
   const showAlert = (message: string) => {
     alertMessage = message;
@@ -329,7 +319,7 @@ export const Abscap = (props: any): JSX.Element => {
         noiseData[index].displayNoise = false;
       }
     });
-    if (sort === "freq") {
+    if (sort === 'freq') {
       setColumns(sortByFrequency());
     } else {
       setColumns(sortByTotalNoise(excluded));
@@ -340,10 +330,10 @@ export const Abscap = (props: any): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.checked) {
-      sort = "total";
+      sort = 'total';
       setColumns(sortByTotalNoise(excluded));
     } else {
-      sort = "freq";
+      sort = 'freq';
       setColumns(sortByFrequency());
     }
   };
@@ -362,35 +352,35 @@ export const Abscap = (props: any): JSX.Element => {
 
   const handleExcludeAllButtonClick = () => {
     const exclusions = { ...excluded };
-    Object.keys(exclusions).forEach((item) => {
+    Object.keys(exclusions).forEach(item => {
       exclusions[item] = true;
     });
     setExcluded(exclusions);
-    if (sort === "total") {
+    if (sort === 'total') {
       setColumns(sortByTotalNoise(exclusions));
     }
   };
 
   const handleClearExclusionsButtonClick = () => {
     const exclusions = { ...excluded };
-    Object.keys(exclusions).forEach((item) => {
+    Object.keys(exclusions).forEach(item => {
       exclusions[item] = false;
     });
     setExcluded(exclusions);
-    if (sort === "total") {
+    if (sort === 'total') {
       setColumns(sortByTotalNoise(exclusions));
     }
   };
 
   const handleTestButtonClick = () => {
-    testCommit = "test";
+    testCommit = 'test';
     dialogTitle = TEST_DIALOG_TITLE;
     updateSelectedGears(selected, props.numGears, showT2D);
     setOpenDialog(true);
   };
 
   const handleCommitButtonClick = () => {
-    testCommit = "commit";
+    testCommit = 'commit';
     dialogTitle = COMMIT_DIALOG_TITLE;
     updateSelectedGears(selected, props.numGears, showT2D);
     setOpenDialog(true);
@@ -405,8 +395,8 @@ export const Abscap = (props: any): JSX.Element => {
   };
 
   const handleHSyncInputChange = (value: string) => {
-    if (value === "" || /^[1-9]\d*(\.\d*)?$/.test(value)) {
-      if (value === "") {
+    if (value === '' || /^[1-9]\d*(\.\d*)?$/.test(value)) {
+      if (value === '') {
         hSyncFreq = 0;
       } else {
         hSyncFreq = parseFloat(value);
@@ -422,14 +412,14 @@ export const Abscap = (props: any): JSX.Element => {
 
   const handleDialogWriteButtonClick = () => {
     const selections = intDurs
-      .filter((item) => selected[item.intDur])
-      .map((item) => item.intDur);
-    const commit = testCommit === "commit";
+      .filter(item => selected[item.intDur])
+      .map(item => item.intDur);
+    const commit = testCommit === 'commit';
     try {
       sendSetAbsGearsRequest(selections, props.numGears, commit);
     } catch (error) {
       console.error(error);
-      if (testCommit === "commit") {
+      if (testCommit === 'commit') {
         showAlert(ALERT_MESSAGE_WRITE_TO_FLASH);
       } else {
         showAlert(ALERT_MESSAGE_WRITE_TO_RAM);
@@ -447,19 +437,19 @@ export const Abscap = (props: any): JSX.Element => {
   };
 
   const updateSelection = (column: Column) => {
-    const index = noiseData.findIndex((item) => {
+    const index = noiseData.findIndex(item => {
       return item.intDur === column.intDur;
     });
     if (
       !noiseData[index].selected &&
-      Object.values(selected).filter((item) => item === true).length >=
+      Object.values(selected).filter(item => item === true).length >=
         props.numGears
     ) {
       return;
     }
     noiseData[index].selected = !noiseData[index].selected;
     setSelected({ ...selected, [column.intDur]: !selected[column.intDur] });
-    if (sort === "total") {
+    if (sort === 'total') {
       setColumns(sortByTotalNoise(excluded));
     }
   };
@@ -472,20 +462,20 @@ export const Abscap = (props: any): JSX.Element => {
     const exclusions = { ...excluded };
     exclusions[condition.id] = !exclusions[condition.id];
     setExcluded(exclusions);
-    if (sort === "total") {
+    if (sort === 'total') {
       setColumns(sortByTotalNoise(exclusions));
     }
   };
 
   const generateSelectButtons = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
+    columns.forEach(item => {
       if (showXY) {
-        output.push(<TableCell key={item.intDur + "_x"}></TableCell>);
-        output.push(<TableCell key={item.intDur + "_y"}></TableCell>);
+        output.push(<TableCell key={item.intDur + '_x'}></TableCell>);
+        output.push(<TableCell key={item.intDur + '_y'}></TableCell>);
       }
       output.push(
-        <TableCell key={item.intDur + ""}>
+        <TableCell key={item.intDur + ''}>
           <ToggleButton
             value={item.intDur}
             selected={getSelection(item)}
@@ -493,14 +483,14 @@ export const Abscap = (props: any): JSX.Element => {
               updateSelection(item);
             }}
             sx={{
-              width: "20px",
-              height: "20px",
+              width: '20px',
+              height: '20px',
               borderColor:
-                dark === "" ? "rgba(160, 160, 160, 1)" : "rgba(96, 96, 96, 1)"
+                dark === '' ? 'rgba(160, 160, 160, 1)' : 'rgba(96, 96, 96, 1)'
             }}
           >
             {getSelection(item) ? (
-              <CheckIcon sx={{ width: "20px", height: "20px" }} />
+              <CheckIcon sx={{ width: '20px', height: '20px' }} />
             ) : null}
           </ToggleButton>
         </TableCell>
@@ -511,27 +501,27 @@ export const Abscap = (props: any): JSX.Element => {
 
   const generateIntegrationDurations = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
-      let bgColor = "transparent";
+    columns.forEach(item => {
+      let bgColor = 'transparent';
       if (showT2D && item.displayNoise) {
-        bgColor = "gray";
+        bgColor = 'gray';
       }
       if (showXY) {
         output.push(
           <TableCell
-            key={item.intDur + "_x"}
+            key={item.intDur + '_x'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
         output.push(
           <TableCell
-            key={item.intDur + "_y"}
+            key={item.intDur + '_y'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
       }
       output.push(
-        <TableCell key={item.intDur + ""} sx={{ backgroundColor: bgColor }}>
+        <TableCell key={item.intDur + ''} sx={{ backgroundColor: bgColor }}>
           {item.intDur}
         </TableCell>
       );
@@ -541,27 +531,27 @@ export const Abscap = (props: any): JSX.Element => {
 
   const generateFrequencies = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
-      let bgColor = "transparent";
+    columns.forEach(item => {
+      let bgColor = 'transparent';
       if (showT2D && item.displayNoise) {
-        bgColor = "gray";
+        bgColor = 'gray';
       }
       if (showXY) {
         output.push(
           <TableCell
-            key={item.intDur + "_x"}
+            key={item.intDur + '_x'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
         output.push(
           <TableCell
-            key={item.intDur + "_y"}
+            key={item.intDur + '_y'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
       }
       output.push(
-        <TableCell key={item.intDur + ""} sx={{ backgroundColor: bgColor }}>
+        <TableCell key={item.intDur + ''} sx={{ backgroundColor: bgColor }}>
           {frequencies[item.intDur]}
         </TableCell>
       );
@@ -571,27 +561,27 @@ export const Abscap = (props: any): JSX.Element => {
 
   const generateMaxNoises = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
-      let bgColor = "transparent";
+    columns.forEach(item => {
+      let bgColor = 'transparent';
       if (showT2D && item.displayNoise) {
-        bgColor = "gray";
+        bgColor = 'gray';
       }
       if (showXY) {
         output.push(
           <TableCell
-            key={item.intDur + "_x"}
+            key={item.intDur + '_x'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
         output.push(
           <TableCell
-            key={item.intDur + "_y"}
+            key={item.intDur + '_y'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
       }
       output.push(
-        <TableCell key={item.intDur + ""} sx={{ backgroundColor: bgColor }}>
+        <TableCell key={item.intDur + ''} sx={{ backgroundColor: bgColor }}>
           {findMaxNoise(item)}
         </TableCell>
       );
@@ -601,27 +591,27 @@ export const Abscap = (props: any): JSX.Element => {
 
   const generateMaxNoisesNonExcluded = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
-      let bgColor = "transparent";
+    columns.forEach(item => {
+      let bgColor = 'transparent';
       if (showT2D && item.displayNoise) {
-        bgColor = "gray";
+        bgColor = 'gray';
       }
       if (showXY) {
         output.push(
           <TableCell
-            key={item.intDur + "_x"}
+            key={item.intDur + '_x'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
         output.push(
           <TableCell
-            key={item.intDur + "_y"}
+            key={item.intDur + '_y'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
       }
       output.push(
-        <TableCell key={item.intDur + ""} sx={{ backgroundColor: bgColor }}>
+        <TableCell key={item.intDur + ''} sx={{ backgroundColor: bgColor }}>
           {findMaxNoiseNonExcluded(item, excluded)}
         </TableCell>
       );
@@ -631,25 +621,25 @@ export const Abscap = (props: any): JSX.Element => {
 
   const generateLabelCells = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
-      let bgColor = "transparent";
+    columns.forEach(item => {
+      let bgColor = 'transparent';
       if (showT2D && item.displayNoise) {
-        bgColor = "gray";
+        bgColor = 'gray';
       }
       if (showXY) {
         output.push(
-          <TableCell key={item.intDur + "_x"} sx={{ backgroundColor: bgColor }}>
+          <TableCell key={item.intDur + '_x'} sx={{ backgroundColor: bgColor }}>
             AbsX
           </TableCell>
         );
         output.push(
-          <TableCell key={item.intDur + "_y"} sx={{ backgroundColor: bgColor }}>
+          <TableCell key={item.intDur + '_y'} sx={{ backgroundColor: bgColor }}>
             AbxY
           </TableCell>
         );
       }
       output.push(
-        <TableCell key={item.intDur + ""} sx={{ backgroundColor: bgColor }}>
+        <TableCell key={item.intDur + ''} sx={{ backgroundColor: bgColor }}>
           max
         </TableCell>
       );
@@ -659,27 +649,27 @@ export const Abscap = (props: any): JSX.Element => {
 
   const generateTotalNoisesNonExcluded = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
-      let bgColor = "transparent";
+    columns.forEach(item => {
+      let bgColor = 'transparent';
       if (showT2D && item.displayNoise) {
-        bgColor = "gray";
+        bgColor = 'gray';
       }
       if (showXY) {
         output.push(
           <TableCell
-            key={item.intDur + "_x"}
+            key={item.intDur + '_x'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
         output.push(
           <TableCell
-            key={item.intDur + "_y"}
+            key={item.intDur + '_y'}
             sx={{ backgroundColor: bgColor }}
           ></TableCell>
         );
       }
       output.push(
-        <TableCell key={item.intDur + ""} sx={{ backgroundColor: bgColor }}>
+        <TableCell key={item.intDur + ''} sx={{ backgroundColor: bgColor }}>
           {findTotalNoiseNonExcluded(item, excluded)}
         </TableCell>
       );
@@ -689,8 +679,8 @@ export const Abscap = (props: any): JSX.Element => {
 
   const createConditionData = (condition: NoiseCondition): any => {
     const data: any[] = [];
-    columns.forEach((col) => {
-      const dataSet = noiseData.find((item) => item.intDur === col.intDur);
+    columns.forEach(col => {
+      const dataSet = noiseData.find(item => item.intDur === col.intDur);
       const dataEntry = dataSet!.data.find(
         (item: NoiseDataEntry) => item.condition.id === condition.id
       );
@@ -709,14 +699,14 @@ export const Abscap = (props: any): JSX.Element => {
     let maxVals: number[];
     if (showXY) {
       maxVals = data
-        .map((item) => {
+        .map(item => {
           return item.value;
         })
         .filter((item, index) => {
           return (index + 1) % 3 === 0;
         });
     } else {
-      maxVals = data.map((item) => {
+      maxVals = data.map(item => {
         return item.value;
       });
     }
@@ -740,26 +730,26 @@ export const Abscap = (props: any): JSX.Element => {
                 updateExclusion(item);
               }}
               sx={{
-                width: "20px",
-                height: "20px",
+                width: '20px',
+                height: '20px',
                 borderColor:
-                  dark === "" ? "rgba(160, 160, 160, 1)" : "rgba(96, 96, 96, 1)"
+                  dark === '' ? 'rgba(160, 160, 160, 1)' : 'rgba(96, 96, 96, 1)'
               }}
             >
               {getExclusion(item) ? (
-                <ClearIcon sx={{ width: "20px", height: "20px" }} />
+                <ClearIcon sx={{ width: '20px', height: '20px' }} />
               ) : null}
             </ToggleButton>
           </TableCell>
           <TableCell>{conditionData.minNoise}</TableCell>
-          <TableCell sx={{ fontWeight: "bold" }}>
+          <TableCell sx={{ fontWeight: 'bold' }}>
             {findMinGearNoise(item)}
           </TableCell>
           <TableCell component="th">{item.name}</TableCell>
           {conditionData.data.map((item: any, index: number) => {
-            let bgColor = "transparent";
+            let bgColor = 'transparent';
             if (showT2D && item.displayNoise) {
-              bgColor = "gray";
+              bgColor = 'gray';
             }
             return (
               <TableCell key={index} sx={{ backgroundColor: bgColor }}>
@@ -777,12 +767,12 @@ export const Abscap = (props: any): JSX.Element => {
     noiseData = props.noiseData.map((item: NoiseDataSet) =>
       Object.assign({}, item)
     );
-    intDurs = noiseData.map((item) => {
+    intDurs = noiseData.map(item => {
       return { intDur: item.intDur, displayNoise: item.displayNoise };
     });
     setColumns(intDurs);
     const selected: Selected = {};
-    intDurs.forEach((item) => {
+    intDurs.forEach(item => {
       let freq =
         1000 /
         (((ISTRETCH + item.intDur + RESET + SAMPLE + OVERHEAD) / CLOCK) * 2);
@@ -791,11 +781,11 @@ export const Abscap = (props: any): JSX.Element => {
       selected[item.intDur] = false;
     });
     setSelected(selected);
-    conditions = noiseData[0].data.map((item) => {
+    conditions = noiseData[0].data.map(item => {
       return item.condition;
     });
     const excluded: Excluded = {};
-    conditions.forEach((item) => {
+    conditions.forEach(item => {
       excluded[item.id] = false;
     });
     setExcluded(excluded);
@@ -808,7 +798,7 @@ export const Abscap = (props: any): JSX.Element => {
         <Alert
           severity="error"
           onClose={() => setAlert(false)}
-          sx={{ whiteSpace: "pre-wrap" }}
+          sx={{ whiteSpace: 'pre-wrap' }}
         >
           {alertMessage}
         </Alert>
@@ -818,22 +808,22 @@ export const Abscap = (props: any): JSX.Element => {
           <Canvas title="Carme Gear Selection" width={WIDTH}>
             <Content
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center"
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
               }}
             >
               <Typography>Abscap Table</Typography>
               <TableContainer
                 component={Box}
                 sx={{
-                  marginTop: "16px",
-                  border: "2px solid rgba(128, 128, 128, 1)",
-                  overflowX: "auto"
+                  marginTop: '16px',
+                  border: '2px solid rgba(128, 128, 128, 1)',
+                  overflowX: 'auto'
                 }}
               >
-                <div className={"jp-webds-gear-selection-table" + dark}>
-                  <Table padding="none" sx={{ tableLayout: "fixed" }}>
+                <div className={'jp-webds-gear-selection-table' + dark}>
+                  <Table padding="none" sx={{ tableLayout: 'fixed' }}>
                     <TableBody>
                       <TableRow>
                         <TableCell></TableCell>
@@ -876,12 +866,12 @@ export const Abscap = (props: any): JSX.Element => {
                       </TableRow>
                       <TableRow
                         sx={{
-                          borderBottom: "2px solid rgba(128, 128, 128, 1)"
+                          borderBottom: '2px solid rgba(128, 128, 128, 1)'
                         }}
                       >
                         <TableCell>Exclude</TableCell>
                         <TableCell>Min Noise</TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>
+                        <TableCell sx={{ fontWeight: 'bold' }}>
                           Min Gear Noise
                         </TableCell>
                         <TableCell component="th">Test Condition</TableCell>
@@ -889,7 +879,7 @@ export const Abscap = (props: any): JSX.Element => {
                       </TableRow>
                       {generateConditionRows()}
                       <TableRow
-                        sx={{ borderTop: "2px solid rgba(128, 128, 128, 1)" }}
+                        sx={{ borderTop: '2px solid rgba(128, 128, 128, 1)' }}
                       >
                         <TableCell></TableCell>
                         <TableCell></TableCell>
@@ -906,19 +896,19 @@ export const Abscap = (props: any): JSX.Element => {
             </Content>
             <Controls
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "top",
-                justifyContent: "space-between"
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'top',
+                justifyContent: 'space-between'
               }}
             >
-              <Stack spacing={1} sx={{ width: "150px" }}>
+              <Stack spacing={1} sx={{ width: '150px' }}>
                 <Button
                   size="small"
                   onClick={() => handleExcludeAllButtonClick()}
                   sx={{
-                    width: "120px",
-                    textTransform: "none"
+                    width: '120px',
+                    textTransform: 'none'
                   }}
                 >
                   Exclude All
@@ -927,8 +917,8 @@ export const Abscap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleClearExclusionsButtonClick()}
                   sx={{
-                    width: "120px",
-                    textTransform: "none"
+                    width: '120px',
+                    textTransform: 'none'
                   }}
                 >
                   Exclude None
@@ -936,8 +926,8 @@ export const Abscap = (props: any): JSX.Element => {
                 <CustomFormControlLabel
                   control={
                     <Checkbox
-                      onChange={(event) => handleSortCheckboxClick(event)}
-                      sx={{ width: "24px", height: "24px" }}
+                      onChange={event => handleSortCheckboxClick(event)}
+                      sx={{ width: '24px', height: '24px' }}
                     />
                   }
                   label="&nbsp;Sort by Total Noise"
@@ -945,8 +935,8 @@ export const Abscap = (props: any): JSX.Element => {
                 <CustomFormControlLabel
                   control={
                     <Checkbox
-                      onChange={(event) => handleHideXYCheckboxClick(event)}
-                      sx={{ width: "24px", height: "24px" }}
+                      onChange={event => handleHideXYCheckboxClick(event)}
+                      sx={{ width: '24px', height: '24px' }}
                     />
                   }
                   label="&nbsp;Hide X/Y"
@@ -954,10 +944,8 @@ export const Abscap = (props: any): JSX.Element => {
                 <CustomFormControlLabel
                   control={
                     <Checkbox
-                      onChange={(event) =>
-                        handleDisplayNoiseCheckboxClick(event)
-                      }
-                      sx={{ width: "24px", height: "24px" }}
+                      onChange={event => handleDisplayNoiseCheckboxClick(event)}
+                      sx={{ width: '24px', height: '24px' }}
                     />
                   }
                   label="&nbsp;Highlight Frequencies with Display Noise"
@@ -966,31 +954,31 @@ export const Abscap = (props: any): JSX.Element => {
                   <div>
                     <Typography
                       variant="body2"
-                      sx={{ paddingLeft: "4px", display: "inline-block" }}
+                      sx={{ paddingLeft: '4px', display: 'inline-block' }}
                     >
                       HSync Frequency:&nbsp;
                     </Typography>
                     <TextField
                       variant="standard"
                       value={hSync}
-                      inputProps={{ style: { textAlign: "center" } }}
-                      onChange={(event) =>
+                      inputProps={{ style: { textAlign: 'center' } }}
+                      onChange={event =>
                         handleHSyncInputChange(event.target.value)
                       }
                       sx={{
-                        width: "100px",
-                        display: "inline-block",
-                        "& .MuiInput-root": {
-                          fontSize: "0.875rem"
+                        width: '100px',
+                        display: 'inline-block',
+                        '& .MuiInput-root': {
+                          fontSize: '0.875rem'
                         },
-                        "& .MuiInput-input": {
+                        '& .MuiInput-input': {
                           padding: 0
                         }
                       }}
                     />
                     <Typography
                       variant="body2"
-                      sx={{ display: "inline-block" }}
+                      sx={{ display: 'inline-block' }}
                     >
                       &nbsp;kHz
                     </Typography>
@@ -1002,8 +990,8 @@ export const Abscap = (props: any): JSX.Element => {
                   <Button
                     onClick={() => handleBackButtonClick()}
                     sx={{
-                      width: "150px",
-                      textTransform: "none"
+                      width: '150px',
+                      textTransform: 'none'
                     }}
                   >
                     Back
@@ -1013,8 +1001,8 @@ export const Abscap = (props: any): JSX.Element => {
                   <Button
                     onClick={() => handleFinishButtonClick()}
                     sx={{
-                      width: "150px",
-                      textTransform: "none"
+                      width: '150px',
+                      textTransform: 'none'
                     }}
                   >
                     Finish
@@ -1026,8 +1014,8 @@ export const Abscap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleTestButtonClick()}
                   sx={{
-                    width: "120px",
-                    textTransform: "none"
+                    width: '120px',
+                    textTransform: 'none'
                   }}
                 >
                   Test
@@ -1036,8 +1024,8 @@ export const Abscap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleCommitButtonClick()}
                   sx={{
-                    width: "120px",
-                    textTransform: "none"
+                    width: '120px',
+                    textTransform: 'none'
                   }}
                 >
                   Commit
@@ -1046,12 +1034,12 @@ export const Abscap = (props: any): JSX.Element => {
             </Controls>
           </Canvas>
           <Dialog open={openDialog} onClose={handleDialogClose}>
-            <DialogTitle sx={{ textAlign: "center" }}>
+            <DialogTitle sx={{ textAlign: 'center' }}>
               {dialogTitle}
             </DialogTitle>
             <DialogContent>
               {t2dNoise ? (
-                <DialogContentText sx={{ color: "red" }}>
+                <DialogContentText sx={{ color: 'red' }}>
                   This gear set includes frequencies that may result in T2D
                   noise.
                 </DialogContentText>
@@ -1066,7 +1054,7 @@ export const Abscap = (props: any): JSX.Element => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {selectedGears.map((item) => (
+                  {selectedGears.map(item => (
                     <TableRow key={item.gear}>
                       <TableCell align="center">{item.gear}</TableCell>
                       <TableCell align="center">{item.frequency}</TableCell>
@@ -1080,14 +1068,14 @@ export const Abscap = (props: any): JSX.Element => {
             <DialogActions>
               <Button
                 onClick={() => handleDialogCancelButtonClick()}
-                sx={{ width: "100px" }}
+                sx={{ width: '100px' }}
               >
                 Cancel
               </Button>
               <Button
                 disabled={!selectedGears[0] || !selectedGears[0].frequency}
                 onClick={() => handleDialogWriteButtonClick()}
-                sx={{ width: "100px" }}
+                sx={{ width: '100px' }}
               >
                 Write
               </Button>

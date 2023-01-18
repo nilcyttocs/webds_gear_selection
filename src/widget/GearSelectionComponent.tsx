@@ -1,39 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import Alert from "@mui/material/Alert";
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
+import { ThemeProvider } from '@mui/material/styles';
 
-import CircularProgress from "@mui/material/CircularProgress";
-
-import { ThemeProvider } from "@mui/material/styles";
-
-import Abscap from "./Abscap";
-
-import Advanced from "./Advanced";
-
-import Landing from "./Landing";
-
-import Sweep from "./Sweep";
-
-import Transcap from "./Transcap";
-
-import { requestAPI, webdsService } from "./local_exports";
-
+import Abscap from './Abscap';
+import Advanced from './Advanced';
 import {
-  ALERT_MESSAGE_READ_STATIC,
-  ALERT_MESSAGE_ADD_PUBLIC_CONFIG_JSON,
   ALERT_MESSAGE_ADD_PRIVATE_CONFIG_JSON,
-  DEFAULT_INT_DUR_MIN,
-  DEFAULT_INT_DUR_STEPS,
+  ALERT_MESSAGE_ADD_PUBLIC_CONFIG_JSON,
+  ALERT_MESSAGE_READ_STATIC,
   DEFAULT_BASELINE_FRAMES,
-  DEFAULT_GRAM_DATA_FRAMES
-} from "./constants";
+  DEFAULT_GRAM_DATA_FRAMES,
+  DEFAULT_INT_DUR_MIN,
+  DEFAULT_INT_DUR_STEPS
+} from './constants';
+import Landing from './Landing';
+import { requestAPI, webdsService } from './local_exports';
+import Sweep from './Sweep';
+import Transcap from './Transcap';
 
 export enum Page {
-  Landing = "LANDING",
-  Advanced = "ADVANCED",
-  Sweep = "SWEEP",
-  Transcap = "TRANSCAP",
-  Abscap = "ABSCAP"
+  Landing = 'LANDING',
+  Advanced = 'ADVANCED',
+  Sweep = 'SWEEP',
+  Transcap = 'TRANSCAP',
+  Abscap = 'ABSCAP'
 }
 
 export type NoiseCondition = {
@@ -58,7 +50,7 @@ export type NoiseDataSet = {
 
 export type NoiseData = NoiseDataSet[];
 
-let alertMessage = "";
+let alertMessage = '';
 
 export const GearSelectionComponent = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
@@ -163,14 +155,14 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       return;
     }
     const dataToSend: any = {
-      command: "getStaticConfig"
+      command: 'getStaticConfig'
     };
     try {
-      const staticConfig = await requestAPI<any>("command", {
+      const staticConfig = await requestAPI<any>('command', {
         body: JSON.stringify(dataToSend),
-        method: "POST"
+        method: 'POST'
       });
-      setNumGears(staticConfig["daqParams.freqTable[0].rstretchDur"].length);
+      setNumGears(staticConfig['daqParams.freqTable[0].rstretchDur'].length);
     } catch (error) {
       console.error(`Error - POST /webds/command\n${dataToSend}\n${error}`);
       showAlert(ALERT_MESSAGE_READ_STATIC);
@@ -191,7 +183,7 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
             <Alert
               severity="error"
               onClose={() => setAlert(false)}
-              sx={{ whiteSpace: "pre-wrap" }}
+              sx={{ whiteSpace: 'pre-wrap' }}
             >
               {alertMessage}
             </Alert>
@@ -201,10 +193,10 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
         {!initialized && (
           <div
             style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)"
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)'
             }}
           >
             <CircularProgress color="primary" />

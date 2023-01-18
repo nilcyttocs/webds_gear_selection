@@ -1,64 +1,59 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-
-import MuiAccordion, { AccordionProps } from "@mui/material/Accordion";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
+import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import MuiAccordionSummary, {
   AccordionSummaryProps
-} from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import FormControl from "@mui/material/FormControl";
-import OutlinedInput from "@mui/material/OutlinedInput";
+} from '@mui/material/AccordionSummary';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-
-import { styled } from "@mui/material/styles";
-
-import { Page } from "./GearSelectionComponent";
-
-import { WIDTH } from "./constants";
-
-import { Canvas } from "./mui_extensions/Canvas";
-import { Content } from "./mui_extensions/Content";
-import { Controls } from "./mui_extensions/Controls";
+import { WIDTH } from './constants';
+import { Page } from './GearSelectionComponent';
+import { Canvas } from './mui_extensions/Canvas';
+import { Content } from './mui_extensions/Content';
+import { Controls } from './mui_extensions/Controls';
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
-  "&:not(:last-child)": {
-    marginBottom: "8px"
+  '&:not(:last-child)': {
+    marginBottom: '8px'
   },
-  "&:before": {
-    display: "none"
+  '&:before': {
+    display: 'none'
   }
 }));
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
   <MuiAccordionSummary
-    expandIcon={<KeyboardArrowDownIcon sx={{ fontSize: "0.9rem" }} />}
+    expandIcon={<KeyboardArrowDownIcon sx={{ fontSize: '0.9rem' }} />}
     {...props}
   />
 ))(({ theme }) => ({
   backgroundColor:
-    theme.palette.mode === "dark"
-      ? "rgba(255, 255, 255, .05)"
-      : "rgba(0, 0, 0, .03)",
-  flexDirection: "row-reverse",
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)"
+    theme.palette.mode === 'dark'
+      ? 'rgba(255, 255, 255, .05)'
+      : 'rgba(0, 0, 0, .03)',
+  flexDirection: 'row-reverse',
+  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+    transform: 'rotate(90deg)'
   },
-  "& .MuiAccordionSummary-content": {
+  '& .MuiAccordionSummary-content': {
     marginLeft: theme.spacing(1)
   }
 }));
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)"
+  borderTop: '1px solid rgba(0, 0, 0, .125)'
 }));
 
 export const Advanced = (props: any): JSX.Element => {
@@ -73,20 +68,20 @@ export const Advanced = (props: any): JSX.Element => {
   };
 
   const handleCovarianceInputChange = (id: string, value: string) => {
-    if (value !== "" && isNaN(Number(value))) {
+    if (value !== '' && isNaN(Number(value))) {
       return;
     }
-    if (value === "") {
-      if (id === "baselineFrames") {
+    if (value === '') {
+      if (id === 'baselineFrames') {
         setBaselineFrames(null);
-      } else if (id === "gramDataFrames") setGramDataFrames(null);
+      } else if (id === 'gramDataFrames') setGramDataFrames(null);
       return;
     }
     const num = parseInt(value, 10);
     if (num < 4096) {
-      if (id === "baselineFrames") {
+      if (id === 'baselineFrames') {
         setBaselineFrames(num);
-      } else if (id === "gramDataFrames") setGramDataFrames(num);
+      } else if (id === 'gramDataFrames') setGramDataFrames(num);
     }
   };
 
@@ -102,20 +97,20 @@ export const Advanced = (props: any): JSX.Element => {
         <Canvas title="Carme Gear Selection" width={WIDTH}>
           <Content
             sx={{
-              display: "flex",
-              flexDirection: "column"
+              display: 'flex',
+              flexDirection: 'column'
             }}
           >
-            <div style={{ margin: "0px auto" }}>
+            <div style={{ margin: '0px auto' }}>
               <Typography>Advanced Settings</Typography>
             </div>
-            <div style={{ marginTop: "24px", overflow: "auto" }}>
+            <div style={{ marginTop: '24px', overflow: 'auto' }}>
               <Accordion>
                 <AccordionSummary expandIcon={<KeyboardArrowRightIcon />}>
-                  <Typography sx={{ width: "25%", flexShrink: 0 }}>
+                  <Typography sx={{ width: '25%', flexShrink: 0 }}>
                     Covariance Params
                   </Typography>
-                  <Typography sx={{ color: "text.secondary" }}>
+                  <Typography sx={{ color: 'text.secondary' }}>
                     Baseline Frames:&nbsp; {baselineFrames}, Gram Data
                     Frames:&nbsp;{gramDataFrames}
                   </Typography>
@@ -127,12 +122,12 @@ export const Advanced = (props: any): JSX.Element => {
                       <FormControl
                         variant="outlined"
                         size="small"
-                        sx={{ width: "150px" }}
+                        sx={{ width: '150px' }}
                       >
                         <OutlinedInput
                           id="baselineFrames"
                           value={baselineFrames}
-                          onChange={(event) =>
+                          onChange={event =>
                             handleCovarianceInputChange(
                               event.target.id,
                               event.target.value
@@ -146,12 +141,12 @@ export const Advanced = (props: any): JSX.Element => {
                       <FormControl
                         variant="outlined"
                         size="small"
-                        sx={{ width: "150px" }}
+                        sx={{ width: '150px' }}
                       >
                         <OutlinedInput
                           id="gramDataFrames"
                           value={gramDataFrames}
-                          onChange={(event) =>
+                          onChange={event =>
                             handleCovarianceInputChange(
                               event.target.id,
                               event.target.value
@@ -167,16 +162,16 @@ export const Advanced = (props: any): JSX.Element => {
           </Content>
           <Controls
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center"
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
             <Button
               disabled={baselineFrames === null || gramDataFrames === null}
               onClick={() => handleDoneButtonClick()}
-              sx={{ width: "150px" }}
+              sx={{ width: '150px' }}
             >
               Done
             </Button>

@@ -1,38 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-
-import LinearProgress from "@mui/material/LinearProgress";
-
-import Alert from "@mui/material/Alert";
-import Typography from "@mui/material/Typography";
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import LinearProgress from '@mui/material/LinearProgress';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
 
 import {
+  ALERT_MESSAGE_ABORT_PDNR_SWEEP,
+  ALERT_MESSAGE_ABORT_PRE_PDNR_SWEEP,
+  ALERT_MESSAGE_CLEAR_PDNR_TUNING,
+  ALERT_MESSAGE_PDNR_SWEEP,
+  ALERT_MESSAGE_PRE_PDNR_SWEEP,
+  WIDTH
+} from './constants';
+import {
+  NoiseCondition,
   NoiseData,
   NoiseDataSet,
-  NoiseCondition,
   Page
-} from "./GearSelectionComponent";
-
-import {
-  ALERT_MESSAGE_PRE_PDNR_SWEEP,
-  ALERT_MESSAGE_PDNR_SWEEP,
-  ALERT_MESSAGE_ABORT_PRE_PDNR_SWEEP,
-  ALERT_MESSAGE_ABORT_PDNR_SWEEP,
-  ALERT_MESSAGE_CLEAR_PDNR_TUNING,
-  WIDTH
-} from "./constants";
-
-import { Canvas } from "./mui_extensions/Canvas";
-import { Content } from "./mui_extensions/Content";
-import { Controls } from "./mui_extensions/Controls";
-
-import { requestAPI } from "./local_exports";
+} from './GearSelectionComponent';
+import { requestAPI } from './local_exports';
+import { Canvas } from './mui_extensions/Canvas';
+import { Content } from './mui_extensions/Content';
+import { Controls } from './mui_extensions/Controls';
 
 const SSE_CLOSED = 2;
 
@@ -42,41 +36,41 @@ let noiseData: NoiseData = [];
 
 let eventSource: EventSource | undefined = undefined;
 
-let alertMessage = "";
+let alertMessage = '';
 
 const sendAbortRequest = async (): Promise<void> => {
   const dataToSend = {
-    function: "stop"
+    function: 'stop'
   };
   try {
-    await requestAPI<any>("gear-selection", {
+    await requestAPI<any>('gear-selection', {
       body: JSON.stringify(dataToSend),
-      method: "POST"
+      method: 'POST'
     });
     return Promise.resolve();
   } catch (error) {
     console.error(
       `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
     );
-    return Promise.reject("Failed to abort sweep");
+    return Promise.reject('Failed to abort sweep');
   }
 };
 
 const sendClearPDNRTuningRequest = async (): Promise<void> => {
   const dataToSend = {
-    function: "clear_pdnr_tuning"
+    function: 'clear_pdnr_tuning'
   };
   try {
-    await requestAPI<any>("gear-selection", {
+    await requestAPI<any>('gear-selection', {
       body: JSON.stringify(dataToSend),
-      method: "POST"
+      method: 'POST'
     });
     return Promise.resolve();
   } catch (error) {
     console.error(
       `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
     );
-    return Promise.reject("Failed to clear PDNR tuning");
+    return Promise.reject('Failed to clear PDNR tuning');
   }
 };
 
@@ -91,16 +85,16 @@ const sendSweepRequest = async (
     arguments: [intDurs, numGears, baselineFrames, gramDataFrames]
   };
   try {
-    await requestAPI<any>("gear-selection", {
+    await requestAPI<any>('gear-selection', {
       body: JSON.stringify(dataToSend),
-      method: "POST"
+      method: 'POST'
     });
     return Promise.resolve();
   } catch (error) {
     console.error(
       `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
     );
-    return Promise.reject("Failed to do sweep");
+    return Promise.reject('Failed to do sweep');
   }
 };
 
@@ -109,8 +103,8 @@ export const Sweep = (props: any): JSX.Element => {
   const [alert, setAlert] = useState<boolean>(false);
   const [step, setStep] = useState<number>(0);
   const [prog, setProg] = useState(0);
-  const [sweep, setSweep] = useState<string>("Pre-PDNR Sweep");
-  const [goLabel, setGoLabel] = useState<string>("Go");
+  const [sweep, setSweep] = useState<string>('Pre-PDNR Sweep');
+  const [goLabel, setGoLabel] = useState<string>('Go');
   const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
   const [listRightPdding, setListRightPadding] = useState(0);
 
@@ -149,7 +143,7 @@ export const Sweep = (props: any): JSX.Element => {
 
   const removeEvent = () => {
     if (eventSource && eventSource.readyState !== SSE_CLOSED) {
-      eventSource.removeEventListener("gear-selection", eventHandler, false);
+      eventSource.removeEventListener('gear-selection', eventHandler, false);
       eventSource.close();
       eventSource = undefined;
     }
@@ -164,16 +158,16 @@ export const Sweep = (props: any): JSX.Element => {
     if (eventSource) {
       return;
     }
-    eventSource = new window.EventSource("/webds/gear-selection");
-    eventSource.addEventListener("gear-selection", eventHandler, false);
-    eventSource.addEventListener("error", errorHandler, false);
+    eventSource = new window.EventSource('/webds/gear-selection');
+    eventSource.addEventListener('gear-selection', eventHandler, false);
+    eventSource.addEventListener('error', errorHandler, false);
     eventSource.onmessage = function (event) {
-      if (event.lastEventId === "stopped") {
+      if (event.lastEventId === 'stopped') {
         removeEvent();
         props.changePage(Page.Landing);
         return;
-      } else if (event.lastEventId === "completed") {
-        if (sweep === "PDNR Sweep") {
+      } else if (event.lastEventId === 'completed') {
+        if (sweep === 'PDNR Sweep') {
           const data = JSON.parse(event.data);
           collectNoiseData(data);
         }
@@ -182,12 +176,12 @@ export const Sweep = (props: any): JSX.Element => {
           if (step < props.noiseConditions.length - 1) {
             setStep(step + 1);
             setProg(0);
-          } else if (sweep === "Pre-PDNR Sweep") {
-            setSweep("PDNR Sweep");
+          } else if (sweep === 'Pre-PDNR Sweep') {
+            setSweep('PDNR Sweep');
             setStep(0);
             setProg(0);
           } else {
-            setGoLabel("Next");
+            setGoLabel('Next');
             setProg(100);
           }
         }, 1500);
@@ -196,7 +190,7 @@ export const Sweep = (props: any): JSX.Element => {
   };
 
   const doSweep = () => {
-    if (sweep === "Pre-PDNR Sweep" && step === 0) {
+    if (sweep === 'Pre-PDNR Sweep' && step === 0) {
       try {
         sendClearPDNRTuningRequest();
       } catch (error) {
@@ -206,21 +200,21 @@ export const Sweep = (props: any): JSX.Element => {
       }
     }
     if (
-      sweep === "PDNR Sweep" &&
+      sweep === 'PDNR Sweep' &&
       step === props.noiseConditions.length - 1 &&
       prog === 100
     ) {
-      setSweep("Pre-PDNR Sweep");
-      setGoLabel("Go");
+      setSweep('Pre-PDNR Sweep');
+      setGoLabel('Go');
       props.setNoiseData(noiseData);
       props.changePage(Page.Transcap);
       return;
     }
-    let fnName = "";
-    if (sweep === "Pre-PDNR Sweep") {
-      fnName = "pre_pdnr_sweep";
+    let fnName = '';
+    if (sweep === 'Pre-PDNR Sweep') {
+      fnName = 'pre_pdnr_sweep';
     } else {
-      fnName = "pdnr_sweep";
+      fnName = 'pdnr_sweep';
     }
     try {
       sendSweepRequest(
@@ -231,7 +225,7 @@ export const Sweep = (props: any): JSX.Element => {
       );
     } catch (error) {
       console.error(error);
-      if (sweep === "Pre-PDNR Sweep") {
+      if (sweep === 'Pre-PDNR Sweep') {
         showAlert(ALERT_MESSAGE_PRE_PDNR_SWEEP);
       } else {
         showAlert(ALERT_MESSAGE_PDNR_SWEEP);
@@ -247,7 +241,7 @@ export const Sweep = (props: any): JSX.Element => {
   };
 
   const handleAbortButtonClick = () => {
-    if (prog === 0 || goLabel === "Next") {
+    if (prog === 0 || goLabel === 'Next') {
       removeEvent();
       props.changePage(Page.Landing);
     }
@@ -255,7 +249,7 @@ export const Sweep = (props: any): JSX.Element => {
       sendAbortRequest();
     } catch (error) {
       console.error(error);
-      if (sweep === "Pre-PDNR Sweep") {
+      if (sweep === 'Pre-PDNR Sweep') {
         showAlert(ALERT_MESSAGE_ABORT_PRE_PDNR_SWEEP);
       } else {
         showAlert(ALERT_MESSAGE_ABORT_PDNR_SWEEP);
@@ -270,19 +264,19 @@ export const Sweep = (props: any): JSX.Element => {
           <div
             key={id}
             style={{
-              position: "relative"
+              position: 'relative'
             }}
           >
             <ListItem divider selected>
-              <ListItemText primary={name} sx={{ paddingLeft: "16px" }} />
+              <ListItemText primary={name} sx={{ paddingLeft: '16px' }} />
             </ListItem>
             <LinearProgress
               variant="determinate"
               value={prog}
               sx={{
-                position: "absolute",
-                bottom: "0px",
-                width: "100%"
+                position: 'absolute',
+                bottom: '0px',
+                width: '100%'
               }}
             />
           </div>
@@ -290,7 +284,7 @@ export const Sweep = (props: any): JSX.Element => {
       }
       return (
         <ListItem key={id} divider>
-          <ListItemText primary={name} sx={{ paddingLeft: "16px" }} />
+          <ListItemText primary={name} sx={{ paddingLeft: '16px' }} />
         </ListItem>
       );
     });
@@ -304,7 +298,7 @@ export const Sweep = (props: any): JSX.Element => {
 
   useEffect(() => {
     const element = document.getElementById(
-      "webds_gear_selection_sweep_noise_conditions_list"
+      'webds_gear_selection_sweep_noise_conditions_list'
     );
     if (element && element.scrollHeight > element.clientHeight) {
       setListRightPadding(8);
@@ -344,7 +338,7 @@ export const Sweep = (props: any): JSX.Element => {
         <Alert
           severity="error"
           onClose={() => setAlert(false)}
-          sx={{ whiteSpace: "pre-wrap" }}
+          sx={{ whiteSpace: 'pre-wrap' }}
         >
           {alertMessage}
         </Alert>
@@ -353,37 +347,37 @@ export const Sweep = (props: any): JSX.Element => {
         <Canvas title="Carme Gear Selection" width={WIDTH}>
           <Content
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center"
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
             }}
           >
-            <Typography sx={{ fontSize: "1.1rem" }}>{sweep}</Typography>
+            <Typography sx={{ fontSize: '1.1rem' }}>{sweep}</Typography>
             <Typography
               sx={{
-                marginTop: "8px",
-                fontSize: "1.1rem",
-                textDecoration: "underline"
+                marginTop: '8px',
+                fontSize: '1.1rem',
+                textDecoration: 'underline'
               }}
             >
               Please set up noise condition "
-              <span style={{ fontWeight: "bold" }}>
+              <span style={{ fontWeight: 'bold' }}>
                 {props.noiseConditions[step].name}
               </span>
               ". Click Go when done.
             </Typography>
             <Divider
               orientation="horizontal"
-              sx={{ width: "100%", marginTop: "24px" }}
+              sx={{ width: '100%', marginTop: '24px' }}
             />
-            <Typography sx={{ marginTop: "24px" }}>Noise Conditions</Typography>
+            <Typography sx={{ marginTop: '24px' }}>Noise Conditions</Typography>
             <div
               id="webds_gear_selection_sweep_noise_conditions_list"
               style={{
-                width: "75%",
-                marginTop: "16px",
+                width: '75%',
+                marginTop: '16px',
                 paddingRight: listRightPdding,
-                overflow: "auto"
+                overflow: 'auto'
               }}
             >
               <List>{generateListItems()}</List>
@@ -391,16 +385,16 @@ export const Sweep = (props: any): JSX.Element => {
           </Content>
           <Controls
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center"
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
             <Button
-              disabled={prog !== 0 && goLabel !== "Next"}
+              disabled={prog !== 0 && goLabel !== 'Next'}
               onClick={() => handleGoButtonClick()}
-              sx={{ width: "150px" }}
+              sx={{ width: '150px' }}
             >
               {goLabel}
             </Button>
@@ -408,10 +402,10 @@ export const Sweep = (props: any): JSX.Element => {
               variant="text"
               onClick={() => handleAbortButtonClick()}
               sx={{
-                position: "absolute",
-                top: "50%",
-                right: "24px",
-                transform: "translate(0%, -50%)"
+                position: 'absolute',
+                top: '50%',
+                right: '24px',
+                transform: 'translate(0%, -50%)'
               }}
             >
               <Typography variant="underline">Abort</Typography>

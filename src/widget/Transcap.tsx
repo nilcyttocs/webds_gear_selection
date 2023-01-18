@@ -1,54 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
-
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
-import ToggleButton from "@mui/material/ToggleButton";
-
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-
-import Alert from "@mui/material/Alert";
-import Typography from "@mui/material/Typography";
-
-import { useTheme } from "@mui/material/styles";
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Stack from '@mui/material/Stack';
+import { useTheme } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import ToggleButton from '@mui/material/ToggleButton';
+import Typography from '@mui/material/Typography';
 
 import {
-  Page,
-  NoiseData,
-  NoiseDataSet,
-  NoiseDataEntry,
-  NoiseCondition
-} from "./GearSelectionComponent";
-
-import {
-  ALERT_MESSAGE_WRITE_TO_RAM,
   ALERT_MESSAGE_WRITE_TO_FLASH,
-  TEST_DIALOG_TITLE,
+  ALERT_MESSAGE_WRITE_TO_RAM,
   COMMIT_DIALOG_TITLE,
+  TEST_DIALOG_TITLE,
   WIDTH
-} from "./constants";
-
-import { Canvas } from "./mui_extensions/Canvas";
-import { Content } from "./mui_extensions/Content";
-import { Controls } from "./mui_extensions/Controls";
-
-import { requestAPI } from "./local_exports";
+} from './constants';
+import {
+  NoiseCondition,
+  NoiseData,
+  NoiseDataEntry,
+  NoiseDataSet,
+  Page
+} from './GearSelectionComponent';
+import { requestAPI } from './local_exports';
+import { Canvas } from './mui_extensions/Canvas';
+import { Content } from './mui_extensions/Content';
+import { Controls } from './mui_extensions/Controls';
 
 const ISTRETCH = 9;
 const RESET = 10;
@@ -71,9 +62,9 @@ type SelectedGear = {
 
 type SelectedGears = SelectedGear[];
 
-let sort = "freq";
+let sort = 'freq';
 
-let testCommit = "test";
+let testCommit = 'test';
 
 let noiseData: NoiseData = [];
 
@@ -85,9 +76,9 @@ let conditions: NoiseCondition[] = [];
 
 let selectedGears: SelectedGears = [];
 
-let alertMessage = "";
+let alertMessage = '';
 
-let dialogTitle = "";
+let dialogTitle = '';
 
 const sendSetTransGearsRequest = async (
   selections: number[],
@@ -95,20 +86,20 @@ const sendSetTransGearsRequest = async (
   commit: boolean
 ): Promise<void> => {
   const dataToSend = {
-    function: "set_trans_gears",
+    function: 'set_trans_gears',
     arguments: [selections, numGears, commit]
   };
   try {
-    await requestAPI<any>("gear-selection", {
+    await requestAPI<any>('gear-selection', {
       body: JSON.stringify(dataToSend),
-      method: "POST"
+      method: 'POST'
     });
     return Promise.resolve();
   } catch (error) {
     console.error(
       `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
     );
-    return Promise.reject("Failed to set transcap gears");
+    return Promise.reject('Failed to set transcap gears');
   }
 };
 
@@ -122,7 +113,7 @@ const updateSelectedGears = (selected: Selected, numGears: number) => {
       rstretch: undefined
     });
   }
-  const selections = intDurs.filter((item) => selected[item]);
+  const selections = intDurs.filter(item => selected[item]);
   if (selections.length) {
     selectedGears[0].intDur = selections[0];
     for (let idx = 0; idx < selections.length; idx++) {
@@ -135,7 +126,7 @@ const updateSelectedGears = (selected: Selected, numGears: number) => {
 };
 
 const findMaxNoise = (column: number): number | undefined => {
-  const dataSet = noiseData.find((item) => item.intDur === column);
+  const dataSet = noiseData.find(item => item.intDur === column);
   if (dataSet) {
     const maxDataEntry = dataSet.data.reduce(
       (prev, cur) => {
@@ -158,7 +149,7 @@ const findMaxNoiseNonExcluded = (
   column: number,
   exclusions: Excluded
 ): number | undefined => {
-  const dataSet = noiseData.find((item) => item.intDur === column);
+  const dataSet = noiseData.find(item => item.intDur === column);
   if (dataSet) {
     const maxDataEntry = dataSet.data.reduce(
       (prev, cur) => {
@@ -184,7 +175,7 @@ const findTotalNoiseNonExcluded = (
   column: number,
   exclusions: Excluded
 ): number | undefined => {
-  const dataSet = noiseData.find((item) => item.intDur === column);
+  const dataSet = noiseData.find(item => item.intDur === column);
   if (dataSet) {
     const totalNoise = dataSet.data.reduce(
       (prev, cur) => {
@@ -203,10 +194,10 @@ const findTotalNoiseNonExcluded = (
 
 const findMinGearNoise = (condition: NoiseCondition): number | undefined => {
   const gearNoise: number[] = [];
-  noiseData.forEach((item) => {
+  noiseData.forEach(item => {
     if (item.selected) {
       const dataEntry = item.data.find(
-        (item) => item.condition.id === condition.id
+        item => item.condition.id === condition.id
       );
       if (dataEntry) {
         gearNoise.push(dataEntry.trans);
@@ -219,7 +210,7 @@ const findMinGearNoise = (condition: NoiseCondition): number | undefined => {
 };
 
 const sortByFrequency = (): number[] => {
-  return noiseData.map((item) => {
+  return noiseData.map(item => {
     return item.intDur;
   });
 };
@@ -227,7 +218,7 @@ const sortByFrequency = (): number[] => {
 const sortByTotalNoise = (exclusions: Excluded): number[] => {
   const selectedGroup: number[] = [];
   const nonSelectedGroup: number[] = [];
-  noiseData.forEach((item) => {
+  noiseData.forEach(item => {
     if (item.selected) {
       selectedGroup.push(item.intDur);
     }
@@ -241,7 +232,7 @@ const sortByTotalNoise = (exclusions: Excluded): number[] => {
       return 0;
     }
   });
-  noiseData.forEach((item) => {
+  noiseData.forEach(item => {
     if (!item.selected) {
       nonSelectedGroup.push(item.intDur);
     }
@@ -267,7 +258,7 @@ export const Transcap = (props: any): JSX.Element => {
   const [excluded, setExcluded] = useState<Excluded>({});
 
   const theme = useTheme();
-  const dark = theme.palette.mode === "dark" ? "-dark" : "";
+  const dark = theme.palette.mode === 'dark' ? '-dark' : '';
 
   const showAlert = (message: string) => {
     alertMessage = message;
@@ -278,45 +269,45 @@ export const Transcap = (props: any): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.checked) {
-      sort = "total";
+      sort = 'total';
       setColumns(sortByTotalNoise(excluded));
     } else {
-      sort = "freq";
+      sort = 'freq';
       setColumns(sortByFrequency());
     }
   };
 
   const handleExcludeAllButtonClick = () => {
     const exclusions = { ...excluded };
-    Object.keys(exclusions).forEach((item) => {
+    Object.keys(exclusions).forEach(item => {
       exclusions[item] = true;
     });
     setExcluded(exclusions);
-    if (sort === "total") {
+    if (sort === 'total') {
       setColumns(sortByTotalNoise(exclusions));
     }
   };
 
   const handleClearExclusionsButtonClick = () => {
     const exclusions = { ...excluded };
-    Object.keys(exclusions).forEach((item) => {
+    Object.keys(exclusions).forEach(item => {
       exclusions[item] = false;
     });
     setExcluded(exclusions);
-    if (sort === "total") {
+    if (sort === 'total') {
       setColumns(sortByTotalNoise(exclusions));
     }
   };
 
   const handleTestButtonClick = () => {
-    testCommit = "test";
+    testCommit = 'test';
     dialogTitle = TEST_DIALOG_TITLE;
     updateSelectedGears(selected, props.numGears);
     setOpenDialog(true);
   };
 
   const handleCommitButtonClick = () => {
-    testCommit = "commit";
+    testCommit = 'commit';
     dialogTitle = COMMIT_DIALOG_TITLE;
     updateSelectedGears(selected, props.numGears);
     setOpenDialog(true);
@@ -335,13 +326,13 @@ export const Transcap = (props: any): JSX.Element => {
   };
 
   const handleDialogWriteButtonClick = () => {
-    const selections = intDurs.filter((item) => selected[item]);
-    const commit = testCommit === "commit";
+    const selections = intDurs.filter(item => selected[item]);
+    const commit = testCommit === 'commit';
     try {
       sendSetTransGearsRequest(selections, props.numGears, commit);
     } catch (error) {
       console.error(error);
-      if (testCommit === "commit") {
+      if (testCommit === 'commit') {
         showAlert(ALERT_MESSAGE_WRITE_TO_FLASH);
       } else {
         showAlert(ALERT_MESSAGE_WRITE_TO_RAM);
@@ -359,19 +350,19 @@ export const Transcap = (props: any): JSX.Element => {
   };
 
   const updateSelection = (column: number) => {
-    const index = noiseData.findIndex((item) => {
+    const index = noiseData.findIndex(item => {
       return item.intDur === column;
     });
     if (
       !noiseData[index].selected &&
-      Object.values(selected).filter((item) => item === true).length >=
+      Object.values(selected).filter(item => item === true).length >=
         props.numGears
     ) {
       return;
     }
     noiseData[index].selected = !noiseData[index].selected;
     setSelected({ ...selected, [column]: !selected[column] });
-    if (sort === "total") {
+    if (sort === 'total') {
       setColumns(sortByTotalNoise(excluded));
     }
   };
@@ -384,14 +375,14 @@ export const Transcap = (props: any): JSX.Element => {
     const exclusions = { ...excluded };
     exclusions[condition.id] = !exclusions[condition.id];
     setExcluded(exclusions);
-    if (sort === "total") {
+    if (sort === 'total') {
       setColumns(sortByTotalNoise(exclusions));
     }
   };
 
   const generateSelectButtons = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
+    columns.forEach(item => {
       output.push(
         <TableCell key={item}>
           <ToggleButton
@@ -401,14 +392,14 @@ export const Transcap = (props: any): JSX.Element => {
               updateSelection(item);
             }}
             sx={{
-              width: "20px",
-              height: "20px",
+              width: '20px',
+              height: '20px',
               borderColor:
-                dark === "" ? "rgba(160, 160, 160, 1)" : "rgba(96, 96, 96, 1)"
+                dark === '' ? 'rgba(160, 160, 160, 1)' : 'rgba(96, 96, 96, 1)'
             }}
           >
             {getSelection(item) ? (
-              <CheckIcon sx={{ width: "20px", height: "20px" }} />
+              <CheckIcon sx={{ width: '20px', height: '20px' }} />
             ) : null}
           </ToggleButton>
         </TableCell>
@@ -419,7 +410,7 @@ export const Transcap = (props: any): JSX.Element => {
 
   const generateIntegrationDurations = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
+    columns.forEach(item => {
       output.push(<TableCell key={item}>{item}</TableCell>);
     });
     return output;
@@ -427,7 +418,7 @@ export const Transcap = (props: any): JSX.Element => {
 
   const generateFrequencies = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
+    columns.forEach(item => {
       output.push(<TableCell key={item}>{frequencies[item]}</TableCell>);
     });
     return output;
@@ -435,7 +426,7 @@ export const Transcap = (props: any): JSX.Element => {
 
   const generateMaxNoises = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
+    columns.forEach(item => {
       output.push(<TableCell key={item}>{findMaxNoise(item)}</TableCell>);
     });
     return output;
@@ -443,7 +434,7 @@ export const Transcap = (props: any): JSX.Element => {
 
   const generateMaxNoisesNonExcluded = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
+    columns.forEach(item => {
       output.push(
         <TableCell key={item}>
           {findMaxNoiseNonExcluded(item, excluded)}
@@ -455,7 +446,7 @@ export const Transcap = (props: any): JSX.Element => {
 
   const generateEmptyCells = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
+    columns.forEach(item => {
       output.push(<TableCell key={item}></TableCell>);
     });
     return output;
@@ -463,7 +454,7 @@ export const Transcap = (props: any): JSX.Element => {
 
   const generateTotalNoisesNonExcluded = (): JSX.Element[] => {
     const output: JSX.Element[] = [];
-    columns.forEach((item) => {
+    columns.forEach(item => {
       output.push(
         <TableCell key={item}>
           {findTotalNoiseNonExcluded(item, excluded)}
@@ -474,8 +465,8 @@ export const Transcap = (props: any): JSX.Element => {
   };
 
   const createConditionData = (condition: NoiseCondition): any => {
-    const data = columns.map((col) => {
-      const dataSet = noiseData.find((item) => item.intDur === col);
+    const data = columns.map(col => {
+      const dataSet = noiseData.find(item => item.intDur === col);
       const dataEntry = dataSet!.data.find(
         (item: NoiseDataEntry) => item.condition.id === condition.id
       );
@@ -501,19 +492,19 @@ export const Transcap = (props: any): JSX.Element => {
                 updateExclusion(item);
               }}
               sx={{
-                width: "20px",
-                height: "20px",
+                width: '20px',
+                height: '20px',
                 borderColor:
-                  dark === "" ? "rgba(160, 160, 160, 1)" : "rgba(96, 96, 96, 1)"
+                  dark === '' ? 'rgba(160, 160, 160, 1)' : 'rgba(96, 96, 96, 1)'
               }}
             >
               {getExclusion(item) ? (
-                <ClearIcon sx={{ width: "20px", height: "20px" }} />
+                <ClearIcon sx={{ width: '20px', height: '20px' }} />
               ) : null}
             </ToggleButton>
           </TableCell>
           <TableCell>{conditionData.minNoise}</TableCell>
-          <TableCell sx={{ fontWeight: "bold" }}>
+          <TableCell sx={{ fontWeight: 'bold' }}>
             {findMinGearNoise(item)}
           </TableCell>
           <TableCell component="th">{item.name}</TableCell>
@@ -530,12 +521,12 @@ export const Transcap = (props: any): JSX.Element => {
     noiseData = props.noiseData.map((item: NoiseDataSet) =>
       Object.assign({}, item)
     );
-    intDurs = noiseData.map((item) => {
+    intDurs = noiseData.map(item => {
       return item.intDur;
     });
     setColumns(intDurs);
     const selected: Selected = {};
-    intDurs.forEach((item) => {
+    intDurs.forEach(item => {
       let freq =
         1000 / (((ISTRETCH + item + RESET + SAMPLE + OVERHEAD) / CLOCK) * 2);
       freq = Math.floor(freq * 10) / 10;
@@ -543,11 +534,11 @@ export const Transcap = (props: any): JSX.Element => {
       selected[item] = false;
     });
     setSelected(selected);
-    conditions = noiseData[0].data.map((item) => {
+    conditions = noiseData[0].data.map(item => {
       return item.condition;
     });
     const excluded: Excluded = {};
-    conditions.forEach((item) => {
+    conditions.forEach(item => {
       excluded[item.id] = false;
     });
     setExcluded(excluded);
@@ -560,7 +551,7 @@ export const Transcap = (props: any): JSX.Element => {
         <Alert
           severity="error"
           onClose={() => setAlert(false)}
-          sx={{ whiteSpace: "pre-wrap" }}
+          sx={{ whiteSpace: 'pre-wrap' }}
         >
           {alertMessage}
         </Alert>
@@ -570,22 +561,22 @@ export const Transcap = (props: any): JSX.Element => {
           <Canvas title="Carme Gear Selection" width={WIDTH}>
             <Content
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center"
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
               }}
             >
               <Typography>Transcap Table</Typography>
               <TableContainer
                 component={Box}
                 sx={{
-                  marginTop: "16px",
-                  border: "2px solid rgba(128, 128, 128, 1)",
-                  overflowX: "auto"
+                  marginTop: '16px',
+                  border: '2px solid rgba(128, 128, 128, 1)',
+                  overflowX: 'auto'
                 }}
               >
-                <div className={"jp-webds-gear-selection-table" + dark}>
-                  <Table padding="none" sx={{ tableLayout: "fixed" }}>
+                <div className={'jp-webds-gear-selection-table' + dark}>
+                  <Table padding="none" sx={{ tableLayout: 'fixed' }}>
                     <TableBody>
                       <TableRow>
                         <TableCell></TableCell>
@@ -628,12 +619,12 @@ export const Transcap = (props: any): JSX.Element => {
                       </TableRow>
                       <TableRow
                         sx={{
-                          borderBottom: "2px solid rgba(128, 128, 128, 1)"
+                          borderBottom: '2px solid rgba(128, 128, 128, 1)'
                         }}
                       >
                         <TableCell>Exclude</TableCell>
                         <TableCell>Min Noise</TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>
+                        <TableCell sx={{ fontWeight: 'bold' }}>
                           Min Gear Noise
                         </TableCell>
                         <TableCell component="th">Test Condition</TableCell>
@@ -641,7 +632,7 @@ export const Transcap = (props: any): JSX.Element => {
                       </TableRow>
                       {generateConditionRows()}
                       <TableRow
-                        sx={{ borderTop: "2px solid rgba(128, 128, 128, 1)" }}
+                        sx={{ borderTop: '2px solid rgba(128, 128, 128, 1)' }}
                       >
                         <TableCell></TableCell>
                         <TableCell></TableCell>
@@ -658,19 +649,19 @@ export const Transcap = (props: any): JSX.Element => {
             </Content>
             <Controls
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "top",
-                justifyContent: "space-between"
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'top',
+                justifyContent: 'space-between'
               }}
             >
-              <Stack spacing={1} sx={{ width: "150px" }}>
+              <Stack spacing={1} sx={{ width: '150px' }}>
                 <Button
                   size="small"
                   onClick={() => handleExcludeAllButtonClick()}
                   sx={{
-                    width: "120px",
-                    textTransform: "none"
+                    width: '120px',
+                    textTransform: 'none'
                   }}
                 >
                   Exclude All
@@ -679,8 +670,8 @@ export const Transcap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleClearExclusionsButtonClick()}
                   sx={{
-                    width: "120px",
-                    textTransform: "none"
+                    width: '120px',
+                    textTransform: 'none'
                   }}
                 >
                   Exclude None
@@ -688,14 +679,14 @@ export const Transcap = (props: any): JSX.Element => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      onChange={(event) => handleSortCheckboxClick(event)}
-                      sx={{ width: "24px", height: "24px" }}
+                      onChange={event => handleSortCheckboxClick(event)}
+                      sx={{ width: '24px', height: '24px' }}
                     />
                   }
                   label="&nbsp;Sort by Total Noise"
                   sx={{
-                    "& .MuiTypography-root": {
-                      fontSize: "0.875rem"
+                    '& .MuiTypography-root': {
+                      fontSize: '0.875rem'
                     }
                   }}
                 />
@@ -705,8 +696,8 @@ export const Transcap = (props: any): JSX.Element => {
                   <Button
                     onClick={() => handleBackButtonClick()}
                     sx={{
-                      width: "150px",
-                      textTransform: "none"
+                      width: '150px',
+                      textTransform: 'none'
                     }}
                   >
                     Back
@@ -716,8 +707,8 @@ export const Transcap = (props: any): JSX.Element => {
                   <Button
                     onClick={() => handleNextButtonClick()}
                     sx={{
-                      width: "150px",
-                      textTransform: "none"
+                      width: '150px',
+                      textTransform: 'none'
                     }}
                   >
                     Next
@@ -729,8 +720,8 @@ export const Transcap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleTestButtonClick()}
                   sx={{
-                    width: "120px",
-                    textTransform: "none"
+                    width: '120px',
+                    textTransform: 'none'
                   }}
                 >
                   Test
@@ -739,8 +730,8 @@ export const Transcap = (props: any): JSX.Element => {
                   size="small"
                   onClick={() => handleCommitButtonClick()}
                   sx={{
-                    width: "120px",
-                    textTransform: "none"
+                    width: '120px',
+                    textTransform: 'none'
                   }}
                 >
                   Commit
@@ -749,7 +740,7 @@ export const Transcap = (props: any): JSX.Element => {
             </Controls>
           </Canvas>
           <Dialog open={openDialog} onClose={handleDialogClose}>
-            <DialogTitle sx={{ textAlign: "center" }}>
+            <DialogTitle sx={{ textAlign: 'center' }}>
               {dialogTitle}
             </DialogTitle>
             <DialogContent>
@@ -763,7 +754,7 @@ export const Transcap = (props: any): JSX.Element => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {selectedGears.map((item) => (
+                  {selectedGears.map(item => (
                     <TableRow key={item.gear}>
                       <TableCell align="center">{item.gear}</TableCell>
                       <TableCell align="center">{item.frequency}</TableCell>
@@ -777,14 +768,14 @@ export const Transcap = (props: any): JSX.Element => {
             <DialogActions>
               <Button
                 onClick={() => handleDialogCancelButtonClick()}
-                sx={{ width: "100px" }}
+                sx={{ width: '100px' }}
               >
                 Cancel
               </Button>
               <Button
                 disabled={!selectedGears[0] || !selectedGears[0].frequency}
                 onClick={() => handleDialogWriteButtonClick()}
-                sx={{ width: "100px" }}
+                sx={{ width: '100px' }}
               >
                 Write
               </Button>
