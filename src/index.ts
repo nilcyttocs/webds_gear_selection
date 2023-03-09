@@ -2,24 +2,24 @@ import {
   ILayoutRestorer,
   JupyterFrontEnd,
   JupyterFrontEndPlugin
-} from "@jupyterlab/application";
+} from '@jupyterlab/application';
 
-import { WidgetTracker } from "@jupyterlab/apputils";
+import { WidgetTracker } from '@jupyterlab/apputils';
 
-import { ILauncher } from "@jupyterlab/launcher";
+import { ILauncher } from '@jupyterlab/launcher';
 
-import { WebDSService, WebDSWidget } from "@webds/service";
+import { WebDSService, WebDSWidget } from '@webds/service';
 
-import { gearSelectionIcon } from "./icons";
+import { gearSelectionIcon } from './icons';
 
-import GearSelectionWidget from "./widget/GearSelectionWidget";
+import GearSelectionWidget from './widget/GearSelectionWidget';
 
 namespace Attributes {
-  export const command = "webds_gear_selection:open";
-  export const id = "webds_gear_selection_widget";
-  export const label = "Gear Selection";
-  export const caption = "Gear Selection";
-  export const category = "Touch - Config Library";
+  export const command = 'webds_gear_selection:open';
+  export const id = 'webds_gear_selection_widget';
+  export const label = 'Gear Selection';
+  export const caption = 'Gear Selection';
+  export const category = 'Device - Config Library';
   export const rank = 50;
 }
 
@@ -29,7 +29,7 @@ export let webdsService: WebDSService;
  * Initialization data for the @webds/gear_selection extension.
  */
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: "@webds/gear_selection:plugin",
+  id: '@webds/gear_selection:plugin',
   autoStart: true,
   requires: [ILauncher, ILayoutRestorer, WebDSService],
   activate: (
@@ -38,7 +38,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     restorer: ILayoutRestorer,
     service: WebDSService
   ) => {
-    console.log("JupyterLab extension @webds/gear_selection is activated!");
+    console.log('JupyterLab extension @webds/gear_selection is activated!');
 
     webdsService = service;
 
@@ -49,7 +49,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: Attributes.label,
       caption: Attributes.caption,
       icon: (args: { [x: string]: any }) => {
-        return args["isLauncher"] ? gearSelectionIcon : undefined;
+        return args['isLauncher'] ? gearSelectionIcon : undefined;
       },
       execute: () => {
         if (!widget || widget.isDisposed) {
@@ -63,7 +63,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
         if (!tracker.has(widget)) tracker.add(widget);
 
-        if (!widget.isAttached) shell.add(widget, "main");
+        if (!widget.isAttached) shell.add(widget, 'main');
 
         shell.activateById(widget.id);
       }
