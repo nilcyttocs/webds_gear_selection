@@ -29,9 +29,11 @@ import { Controls } from './mui_extensions/Controls';
 export const Landing = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [intDurMin, setIntDurMin] = useState<number | null>(props.intDurMin);
-  const [intDurSteps, setIntDurSteps] = useState<number | null>(
-    props.intDurSteps
+  const [intDurMin, setIntDurMin] = useState<string>(
+    props.intDurMin.toString()
+  );
+  const [intDurSteps, setIntDurSteps] = useState<string>(
+    props.intDurSteps.toString()
   );
   const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
   const [noiseConditionEntry, setNoiseConditionEntry] = useState<any>({
@@ -51,8 +53,8 @@ export const Landing = (props: any): JSX.Element => {
   };
 
   const handleChangePageButtonClick = (page: Page) => {
-    props.setIntDurMin(intDurMin);
-    props.setIntDurSteps(intDurSteps);
+    props.setIntDurMin(Number(intDurMin));
+    props.setIntDurSteps(Number(intDurSteps));
     props.setNoiseConditions(noiseConditions);
     props.changePage(page);
   };
@@ -124,15 +126,15 @@ export const Landing = (props: any): JSX.Element => {
     }
     if (value === '') {
       if (id === 'intDurMin') {
-        setIntDurMin(null);
-      } else if (id === 'intDurSteps') setIntDurSteps(null);
+        setIntDurMin(value);
+      } else if (id === 'intDurSteps') setIntDurSteps(value);
       return;
     }
     const num = parseInt(value, 10);
     if (num < 4096) {
       if (id === 'intDurMin') {
-        setIntDurMin(num);
-      } else if (id === 'intDurSteps') setIntDurSteps(num);
+        setIntDurMin(num.toString());
+      } else if (id === 'intDurSteps') setIntDurSteps(num.toString());
     }
   };
 
@@ -277,8 +279,8 @@ export const Landing = (props: any): JSX.Element => {
             >
               <Button
                 disabled={
-                  intDurMin === null ||
-                  intDurSteps == null ||
+                  intDurMin === '' ||
+                  intDurSteps == '' ||
                   noiseConditions.length === 0
                 }
                 onClick={() => handleChangePageButtonClick(Page.Sweep)}

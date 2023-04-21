@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -76,8 +75,6 @@ let conditions: NoiseCondition[] = [];
 
 let selectedGears: SelectedGears = [];
 
-let alertMessage = '';
-
 let dialogTitle = '';
 
 const sendSetTransGearsRequest = async (
@@ -90,14 +87,14 @@ const sendSetTransGearsRequest = async (
     arguments: [selections, numGears, commit]
   };
   try {
-    await requestAPI<any>('gear-selection', {
+    await requestAPI<any>('tutor/GearSelection', {
       body: JSON.stringify(dataToSend),
       method: 'POST'
     });
     return Promise.resolve();
   } catch (error) {
     console.error(
-      `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
+      `Error - POST /webds/tutor/GearSelection\n${dataToSend}\n${error}`
     );
     return Promise.reject('Failed to set transcap gears');
   }
@@ -251,7 +248,6 @@ const sortByTotalNoise = (exclusions: Excluded): number[] => {
 
 export const Transcap = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
-  const [alert, setAlert] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [columns, setColumns] = useState<number[]>([]);
   const [selected, setSelected] = useState<Selected>({});
@@ -259,11 +255,6 @@ export const Transcap = (props: any): JSX.Element => {
 
   const theme = useTheme();
   const dark = theme.palette.mode === 'dark' ? '-dark' : '';
-
-  const showAlert = (message: string) => {
-    alertMessage = message;
-    setAlert(true);
-  };
 
   const handleSortCheckboxClick = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -333,9 +324,9 @@ export const Transcap = (props: any): JSX.Element => {
     } catch (error) {
       console.error(error);
       if (testCommit === 'commit') {
-        showAlert(ALERT_MESSAGE_WRITE_TO_FLASH);
+        props.setAlert(ALERT_MESSAGE_WRITE_TO_FLASH);
       } else {
-        showAlert(ALERT_MESSAGE_WRITE_TO_RAM);
+        props.setAlert(ALERT_MESSAGE_WRITE_TO_RAM);
       }
     }
     handleDialogClose();
@@ -547,15 +538,6 @@ export const Transcap = (props: any): JSX.Element => {
 
   return (
     <>
-      {alert ? (
-        <Alert
-          severity="error"
-          onClose={() => setAlert(false)}
-          sx={{ whiteSpace: 'pre-wrap' }}
-        >
-          {alertMessage}
-        </Alert>
-      ) : null}
       {initialized ? (
         <>
           <Canvas title="Carme Gear Selection" width={WIDTH}>

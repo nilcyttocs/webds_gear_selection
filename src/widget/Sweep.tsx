@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -36,21 +35,19 @@ let noiseData: NoiseData = [];
 
 let eventSource: EventSource | undefined = undefined;
 
-let alertMessage = '';
-
 const sendAbortRequest = async (): Promise<void> => {
   const dataToSend = {
     function: 'stop'
   };
   try {
-    await requestAPI<any>('gear-selection', {
+    await requestAPI<any>('tutor/GearSelection', {
       body: JSON.stringify(dataToSend),
       method: 'POST'
     });
     return Promise.resolve();
   } catch (error) {
     console.error(
-      `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
+      `Error - POST /webds/tutor/GearSelection\n${dataToSend}\n${error}`
     );
     return Promise.reject('Failed to abort sweep');
   }
@@ -61,14 +58,14 @@ const sendClearPDNRTuningRequest = async (): Promise<void> => {
     function: 'clear_pdnr_tuning'
   };
   try {
-    await requestAPI<any>('gear-selection', {
+    await requestAPI<any>('tutor/GearSelection', {
       body: JSON.stringify(dataToSend),
       method: 'POST'
     });
     return Promise.resolve();
   } catch (error) {
     console.error(
-      `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
+      `Error - POST /webds/tutor/GearSelection\n${dataToSend}\n${error}`
     );
     return Promise.reject('Failed to clear PDNR tuning');
   }
@@ -85,14 +82,14 @@ const sendSweepRequest = async (
     arguments: [intDurs, numGears, baselineFrames, gramDataFrames]
   };
   try {
-    await requestAPI<any>('gear-selection', {
+    await requestAPI<any>('tutor/GearSelection', {
       body: JSON.stringify(dataToSend),
       method: 'POST'
     });
     return Promise.resolve();
   } catch (error) {
     console.error(
-      `Error - POST /webds/gear-selection\n${dataToSend}\n${error}`
+      `Error - POST /webds/tutor/GearSelection\n${dataToSend}\n${error}`
     );
     return Promise.reject('Failed to do sweep');
   }
@@ -100,18 +97,12 @@ const sendSweepRequest = async (
 
 export const Sweep = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
-  const [alert, setAlert] = useState<boolean>(false);
   const [step, setStep] = useState<number>(0);
   const [prog, setProg] = useState(0);
   const [sweep, setSweep] = useState<string>('Pre-PDNR Sweep');
   const [goLabel, setGoLabel] = useState<string>('Go');
   const [noiseConditions, setNoiseConditions] = useState<NoiseCondition[]>([]);
   const [listRightPdding, setListRightPadding] = useState(0);
-
-  const showAlert = (message: string) => {
-    alertMessage = message;
-    setAlert(true);
-  };
 
   const collectNoiseData = (data: number[][]) => {
     noiseData.forEach((item, index: number) => {
@@ -137,41 +128,17 @@ export const Sweep = (props: any): JSX.Element => {
   const eventHandler = (event: any) => {
     const data = JSON.parse(event.data);
     console.log(data);
-    const progress = (data.progress * 100) / data.total;
-    setProg(progress);
-  };
-
-  const removeEvent = () => {
-    if (eventSource && eventSource.readyState !== SSE_CLOSED) {
-      eventSource.removeEventListener('gear-selection', eventHandler, false);
-      eventSource.close();
-      eventSource = undefined;
-    }
-  };
-
-  const errorHandler = (error: any) => {
-    removeEvent();
-    console.error(`Error - GET /webds/gear-selection\n${error}`);
-  };
-
-  const addEvent = () => {
-    if (eventSource) {
-      return;
-    }
-    eventSource = new window.EventSource('/webds/gear-selection');
-    eventSource.addEventListener('gear-selection', eventHandler, false);
-    eventSource.addEventListener('error', errorHandler, false);
-    eventSource.onmessage = function (event) {
-      if (event.lastEventId === 'stopped') {
-        removeEvent();
-        props.changePage(Page.Landing);
-        return;
-      } else if (event.lastEventId === 'completed') {
+    if (data.progress) {
+      const progress = (data.progress * 100) / data.total;
+      setProg(progress);
+    } else if (data.state) {
+      if (data.state === 'completed') {
         if (sweep === 'PDNR Sweep') {
-          const data = JSON.parse(event.data);
-          collectNoiseData(data);
+          collectNoiseData(data.reports);
         }
-        removeEvent();
+        eventSource!.removeEventListener('GearSelection', eventHandler, false);
+        eventSource!.close();
+        eventSource = undefined;
         setTimeout(() => {
           if (step < props.noiseConditions.length - 1) {
             setStep(step + 1);
@@ -185,8 +152,35 @@ export const Sweep = (props: any): JSX.Element => {
             setProg(100);
           }
         }, 1500);
+      } else if (data.state === 'stopped') {
+        eventSource!.removeEventListener('GearSelection', eventHandler, false);
+        eventSource!.close();
+        eventSource = undefined;
+        props.changePage(Page.Landing);
       }
-    };
+    }
+  };
+
+  const removeEvent = () => {
+    if (eventSource && eventSource.readyState !== SSE_CLOSED) {
+      eventSource.removeEventListener('GearSelection', eventHandler, false);
+      eventSource.close();
+      eventSource = undefined;
+    }
+  };
+
+  const errorHandler = (error: any) => {
+    removeEvent();
+    console.error(`Error - GET /webds/tutor/event\n${error}`);
+  };
+
+  const addEvent = () => {
+    if (eventSource) {
+      return;
+    }
+    eventSource = new window.EventSource('/webds/tutor/event');
+    eventSource.addEventListener('GearSelection', eventHandler, false);
+    eventSource.addEventListener('error', errorHandler, false);
   };
 
   const doSweep = () => {
@@ -195,7 +189,7 @@ export const Sweep = (props: any): JSX.Element => {
         sendClearPDNRTuningRequest();
       } catch (error) {
         console.error(error);
-        showAlert(ALERT_MESSAGE_CLEAR_PDNR_TUNING);
+        props.setAlert(ALERT_MESSAGE_CLEAR_PDNR_TUNING);
         return;
       }
     }
@@ -226,9 +220,9 @@ export const Sweep = (props: any): JSX.Element => {
     } catch (error) {
       console.error(error);
       if (sweep === 'Pre-PDNR Sweep') {
-        showAlert(ALERT_MESSAGE_PRE_PDNR_SWEEP);
+        props.setAlert(ALERT_MESSAGE_PRE_PDNR_SWEEP);
       } else {
-        showAlert(ALERT_MESSAGE_PDNR_SWEEP);
+        props.setAlert(ALERT_MESSAGE_PDNR_SWEEP);
       }
       return;
     }
@@ -250,9 +244,9 @@ export const Sweep = (props: any): JSX.Element => {
     } catch (error) {
       console.error(error);
       if (sweep === 'Pre-PDNR Sweep') {
-        showAlert(ALERT_MESSAGE_ABORT_PRE_PDNR_SWEEP);
+        props.setAlert(ALERT_MESSAGE_ABORT_PRE_PDNR_SWEEP);
       } else {
-        showAlert(ALERT_MESSAGE_ABORT_PDNR_SWEEP);
+        props.setAlert(ALERT_MESSAGE_ABORT_PDNR_SWEEP);
       }
     }
   };
@@ -334,15 +328,6 @@ export const Sweep = (props: any): JSX.Element => {
 
   return (
     <>
-      {alert ? (
-        <Alert
-          severity="error"
-          onClose={() => setAlert(false)}
-          sx={{ whiteSpace: 'pre-wrap' }}
-        >
-          {alertMessage}
-        </Alert>
-      ) : null}
       {initialized ? (
         <Canvas title="Carme Gear Selection" width={WIDTH}>
           <Content

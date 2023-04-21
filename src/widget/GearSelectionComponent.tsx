@@ -50,11 +50,9 @@ export type NoiseDataSet = {
 
 export type NoiseData = NoiseDataSet[];
 
-let alertMessage = '';
-
 export const GearSelectionComponent = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(false);
-  const [alert, setAlert] = useState<boolean>(false);
+  const [alert, setAlert] = useState<string | undefined>(undefined);
   const [page, setPage] = useState<Page>(Page.Landing);
   const [numGears, setNumGears] = useState<number>(0);
   const [intDurMin, setIntDurMin] = useState<number>(DEFAULT_INT_DUR_MIN);
@@ -70,11 +68,6 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
 
   const webdsTheme = webdsService.ui.getWebDSTheme();
 
-  const showAlert = (message: string) => {
-    alertMessage = message;
-    setAlert(true);
-  };
-
   const changePage = (newPage: Page) => {
     setPage(newPage);
   };
@@ -84,6 +77,7 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Landing:
         return (
           <Landing
+            setAlert={setAlert}
             changePage={changePage}
             intDurMin={intDurMin}
             setIntDurMin={setIntDurMin}
@@ -96,6 +90,7 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Advanced:
         return (
           <Advanced
+            setAlert={setAlert}
             changePage={changePage}
             baselineFrames={baselineFrames}
             setBaselineFrames={setBaselineFrames}
@@ -106,6 +101,7 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Sweep:
         return (
           <Sweep
+            setAlert={setAlert}
             changePage={changePage}
             numGears={numGears}
             intDurMin={intDurMin}
@@ -119,6 +115,7 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Transcap:
         return (
           <Transcap
+            setAlert={setAlert}
             changePage={changePage}
             numGears={numGears}
             noiseData={noiseData}
@@ -127,6 +124,7 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       case Page.Abscap:
         return (
           <Abscap
+            setAlert={setAlert}
             changePage={changePage}
             numGears={numGears}
             noiseData={noiseData}
@@ -148,9 +146,9 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
     } catch (error) {
       console.error(error);
       if (external) {
-        showAlert(ALERT_MESSAGE_ADD_PUBLIC_CONFIG_JSON);
+        setAlert(ALERT_MESSAGE_ADD_PUBLIC_CONFIG_JSON);
       } else {
-        showAlert(ALERT_MESSAGE_ADD_PRIVATE_CONFIG_JSON);
+        setAlert(ALERT_MESSAGE_ADD_PRIVATE_CONFIG_JSON);
       }
       return;
     }
@@ -165,7 +163,7 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
       setNumGears(staticConfig['daqParams.freqTable[0].rstretchDur'].length);
     } catch (error) {
       console.error(`Error - POST /webds/command\n${dataToSend}\n${error}`);
-      showAlert(ALERT_MESSAGE_READ_STATIC);
+      setAlert(ALERT_MESSAGE_READ_STATIC);
       return;
     }
     setInitialized(true);
@@ -179,13 +177,13 @@ export const GearSelectionComponent = (props: any): JSX.Element => {
     <>
       <ThemeProvider theme={webdsTheme}>
         <div className="jp-webds-widget-body">
-          {alert && (
+          {alert !== undefined && (
             <Alert
               severity="error"
-              onClose={() => setAlert(false)}
+              onClose={() => setAlert(undefined)}
               sx={{ whiteSpace: 'pre-wrap' }}
             >
-              {alertMessage}
+              {alert}
             </Alert>
           )}
           {initialized && displayPage()}

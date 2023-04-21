@@ -58,12 +58,16 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 export const Advanced = (props: any): JSX.Element => {
   const [initialized, setInitialized] = useState<boolean>(true);
-  const [baselineFrames, setBaselineFrames] = useState<number | null>();
-  const [gramDataFrames, setGramDataFrames] = useState<number | null>();
+  const [baselineFrames, setBaselineFrames] = useState<string>(
+    props.baselineFrames.toString()
+  );
+  const [gramDataFrames, setGramDataFrames] = useState<string>(
+    props.gramDataFrames.toString()
+  );
 
   const handleDoneButtonClick = () => {
-    props.setBaselineFrames(baselineFrames);
-    props.setGramDataFrames(gramDataFrames);
+    props.setBaselineFrames(Number(baselineFrames));
+    props.setGramDataFrames(Number(gramDataFrames));
     props.changePage(Page.Landing);
   };
 
@@ -73,23 +77,21 @@ export const Advanced = (props: any): JSX.Element => {
     }
     if (value === '') {
       if (id === 'baselineFrames') {
-        setBaselineFrames(null);
-      } else if (id === 'gramDataFrames') setGramDataFrames(null);
+        setBaselineFrames(value);
+      } else if (id === 'gramDataFrames') setGramDataFrames(value);
       return;
     }
     const num = parseInt(value, 10);
     if (num < 4096) {
       if (id === 'baselineFrames') {
-        setBaselineFrames(num);
-      } else if (id === 'gramDataFrames') setGramDataFrames(num);
+        setBaselineFrames(num.toString());
+      } else if (id === 'gramDataFrames') setGramDataFrames(num.toString());
     }
   };
 
   useEffect(() => {
-    setBaselineFrames(props.baselineFrames);
-    setGramDataFrames(props.gramDataFrames);
     setInitialized(true);
-  }, [props.baselineFrames, props.gramDataFrames]);
+  }, []);
 
   return (
     <>
@@ -169,7 +171,7 @@ export const Advanced = (props: any): JSX.Element => {
             }}
           >
             <Button
-              disabled={baselineFrames === null || gramDataFrames === null}
+              disabled={baselineFrames === '' || gramDataFrames === ''}
               onClick={() => handleDoneButtonClick()}
               sx={{ width: '150px' }}
             >
